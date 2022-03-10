@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 
+module.exports.getSubAreas = getSubAreas
+
 function parseLevelFromClass(classLevel) {
     let fixedLevel = classLevel.replace('l-', '');
     return parseInt(fixedLevel);
@@ -18,6 +20,7 @@ async function getSubAreas(parentAreaId = 0) {
     let selectedClassName = await page.$eval('div > strong', (area) => {
         return area.parentElement.className;
     });
+
     let parentLevel = parseLevelFromClass(selectedClassName);
     console.log(`parent area level: ${parentLevel}`);
 
@@ -45,16 +48,17 @@ async function getSubAreas(parentAreaId = 0) {
     const lastArea = areaData[numResults-1];
     console.log(`last area level: ${lastArea.areaLevel}`);
 
+    await browser.close();
+
     if (parentLevel == lastArea.areaLevel) {
         console.log('is leaf node');
+        return [];
     } else {
         console.log(areaData);
+        return areaData;
     }
-
-
-    await browser.close();
 };
 
-const KENTUCKY_ID = 105868674;
+// const KENTUCKY_ID = 105868674;
 
-getSubAreas(KENTUCKY_ID);
+// getSubAreas(KENTUCKY_ID);
