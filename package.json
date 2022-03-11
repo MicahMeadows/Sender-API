@@ -17,7 +17,9 @@
     "node-fetch": "^2.6.7",
     "puppeteer": "^13.5.0",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "request-promise": "^4.2.6",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
     "eslint": "^8.10.0"
