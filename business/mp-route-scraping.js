@@ -19,6 +19,8 @@ async function getRouteData(routeId) {
         const routeRatingSpan = document.querySelector('a.show-tooltip:nth-child(1)').children[0];
         const firstAscentTd = document.querySelector('.description-details > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)');
         const descriptionDiv = document.querySelector('div.mt-2:nth-child(1) > div:nth-child(3)');
+        const protectionDiv = document.querySelector('div.max-height:nth-child(3) > div:nth-child(3)');
+        const locationDiv = document.querySelector('div.max-height:nth-child(2) > div:nth-child(3)');
         const areaLinks = document.querySelector('div.col-md-9:nth-child(1) > div:nth-child(2)').children;
         const images = document.querySelectorAll('div.col-xs-4.col-lg-3.card-with-photo > a > div > img');
 
@@ -35,24 +37,6 @@ async function getRouteData(routeId) {
         routeRatingSpanText = routeRatingSpanText.replace('Avg: ', '');
         routeRatingSpanText = routeRatingSpanText.substring(0, routeRatingSpanText.indexOf(' '));
         let routeRating = parseFloat(routeRatingSpanText);
-
-        // let areas = [];
-        // for (let i = 1; i < areaLinks.length; i++) {
-        //     let areaLinkText = areaLinks[i].getAttribute('href');
-        //     areaLinkText = areaLinkText.substring(areaLinkText.indexOf('/area/'));
-        //     let splitRemainder = areaLinkText.split('/');
-        //     let areaId = splitRemainder[2];
-        //     let areaName = splitRemainder[3];
-        //     let areaNameWords = areaName.split('-');
-        //     for (let i = 0; i < areaNameWords.length; i++) {
-        //         areaNameWords[i] = areaNameWords[i][0].toUpperCase() + areaNameWords[i].substring(1).toLowerCase();
-        //     }
-
-        //     areas.push({
-        //         areaId: areaId,
-        //         areaName: areaNameWords.join(' '),
-        //     });
-        // }
 
         let areas = Array.from(areaLinks).map(element => {
             let areaLinkText = element.getAttribute('href');
@@ -83,6 +67,8 @@ async function getRouteData(routeId) {
             routeHeight: routeHeight,
             firstAscent: firstAscentTd.innerText,
             description: descriptionDiv.innerText,
+            protection: protectionDiv.innerText,
+            location: locationDiv.innerText,
             areas: areas,
             routeImageUrls: imageUrls,
         };
@@ -94,9 +80,9 @@ async function getRouteData(routeId) {
     return routeDetails;
 }
 
-async function main() {
-    // console.log(await getRouteData(118297380)); // Fugaku
-    console.log(await getRouteData(106702950)); // Different strokes
-}
+// async function main() {
+//     // console.log(await getRouteData(118297380)); // Fugaku
+//     console.log(await getRouteData(106702950)); // Different strokes
+// }
 
-main();
+// main();

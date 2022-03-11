@@ -1,6 +1,7 @@
 const express = require('express');
 const routeFinderHelper = require('./business/route-finder-api-helper');
 const areaScraper = require('./business/mp-area-scraping');
+const routeScraper = require('./business/mp-route-scraping');
 
 const app = express();
 
@@ -46,13 +47,17 @@ app.get('/areas', async (req, res) => {
     }
 });
 
-app.get('/route/:id', async (req, res) => {
+app.get('/route-details/:id', async (req, res) => {
     const { id } = req.params;
 
     if (id == '') {
         res.status(400).send('Please enter a route id.');
     }
 
-    res.status(400).send(`should get route data for ${id}`);
+    var result = await routeScraper.getRouteData(id);
+    if (result == null) {
+        res.status(404).send(`Could not find route for id ${id}`);
+    }
+    res.status(400).send(result);
 
 });
