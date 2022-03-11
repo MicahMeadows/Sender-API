@@ -13,32 +13,90 @@ async function getRouteData(routeId) {
     await page.goto(routeRequestUrl, { waitUntil: 'networkidle2' });
 
     let routeDetails = await page.evaluate(() => {
-        let routePage = document.getElementById('route-page');
-        let routeName = routePage.getElementsByTagName('h1')[0].innerText;
-        let routeGrade = routePage.getElementsByTagName('h2')[0].getElementsByTagName('span')[0].innerText.split(' ')[0];
-        let routeRatingText = document.getElementById('route-star-avg').innerText.trimStart().replace('Avg:', '').trimStart();
-        let routeRating = parseFloat(routeRatingText.substring(0, routeRatingText.indexOf(' ')));
-        let descriptionDetails = routePage.getElementsByClassName('description-details')[0];
-        let tableRows = descriptionDetails.getElementsByTagName('tbody')[0].children;
-        let routeTypeString = tableRows[0].children[1].innerText;
-        let routeType = routeTypeString.substring(0, routeTypeString.indexOf(','));
-        let routeHeight = parseInt(routeTypeString.substring(routeTypeString.indexOf(' ') + 1, routeTypeString.indexOf('ft') - 1));
-        let firstAscent = tableRows[1].children[1].innerText;
+        const routeNameHeader = document.querySelector('#route-page > div > div.col-md-9.float-md-right.mb-1 > h1');
+        const routeGradeSpan = document.querySelector('#route-page > div > div.col-md-9.float-md-right.mb-1 > h2 > span.rateYDS');
+        const routeTypeTd = document.querySelector('#route-page > div > div.col-md-9.main-content.float-md-right > div.row > div.col-lg-7.col-md-6 > div.small.mb-1 > table > tbody > tr:nth-child(1) > td:nth-child(2)');
+        const routeRatingSpan = document.querySelector('a.show-tooltip:nth-child(1)').children[0];
+        const firstAscentTd = document.querySelector('.description-details > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)');
+        const descriptionDiv = document.querySelector('div.mt-2:nth-child(1) > div:nth-child(3)');
+        const areaLinks = document.querySelector('div.col-md-9:nth-child(1) > div:nth-child(2)').children;
+        const images = document.querySelectorAll('div.col-xs-4.col-lg-3.card-with-photo > a > div > img');
 
-        // TODO: next add areas 
+        let routeGradeTextFix = routeGradeSpan.innerText.split(' ')[0];
+
+        let routeTypeTdText = routeTypeTd.innerText;
+        let routeTypeTextFix = routeTypeTdText.substring(0, routeTypeTdText.indexOf(','));
+        let routeHeightText = routeTypeTdText.replace(`${routeTypeTextFix}, `, '');
+        routeHeightText = routeHeightText.substring(0, routeHeightText.indexOf(' '));
+        let routeHeight = parseInt(routeHeightText);
+
+        let routeRatingSpanText = routeRatingSpan.innerText;
+        routeRatingSpanText = routeRatingSpanText.trimStart();
+        routeRatingSpanText = routeRatingSpanText.replace('Avg: ', '');
+        routeRatingSpanText = routeRatingSpanText.substring(0, routeRatingSpanText.indexOf(' '));
+        let routeRating = parseFloat(routeRatingSpanText);
+
+        // let areas = [];
+        // for (let i = 1; i < areaLinks.length; i++) {
+        //     let areaLinkText = areaLinks[i].getAttribute('href');
+        //     areaLinkText = areaLinkText.substring(areaLinkText.indexOf('/area/'));
+        //     let splitRemainder = areaLinkText.split('/');
+        //     let areaId = splitRemainder[2];
+        //     let areaName = splitRemainder[3];
+        //     let areaNameWords = areaName.split('-');
+        //     for (let i = 0; i < areaNameWords.length; i++) {
+        //         areaNameWords[i] = areaNameWords[i][0].toUpperCase() + areaNameWords[i].substring(1).toLowerCase();
+        //     }
+
+        //     areas.push({
+        //         areaId: areaId,
+        //         areaName: areaNameWords.join(' '),
+        //     });
+        // }
+
+        let areas = Array.from(areaLinks).map(element => {
+            let areaLinkText = element.getAttribute('href');
+            areaLinkText = areaLinkText.substring(areaLinkText.indexOf('/area/'));
+            let splitRemainder = areaLinkText.split('/');
+            let areaId = splitRemainder[2];
+            let areaName = splitRemainder[3];
+            let areaNameWords = areaName.split('-');
+            for (let i = 0; i < areaNameWords.length; i++) {
+                areaNameWords[i] = areaNameWords[i][0].toUpperCase() + areaNameWords[i].substring(1).toLowerCase();
+            }
+
+            return {
+                areaId: areaId,
+                areaName: areaNameWords.join(' '),
+            };
+        });
+
+        let imageUrls = Array.from(images).map(element => {
+            return element.getAttribute('data-src').replace('smallMed', 'medium');
+        });
 
         return {
-            routeName: routeName,
-            routeGrade: routeGrade,
+            routeName: routeNameHeader.innerText,
+            routeGrade: routeGradeTextFix,
+            routeType: routeTypeTextFix,
             routeRating: routeRating,
-            routeType: routeType,
             routeHeight: routeHeight,
-            firstAscent: firstAscent,
+            firstAscent: firstAscentTd.innerText,
+            description: descriptionDiv.innerText,
             areas: areas,
+            routeImageUrls: imageUrls,
         };
     });
 
-    console.log(routeDetails);
+    browser.close();
+
+    routeDetails["routeId"] = routeId;
+    return routeDetails;
 }
 
-getRouteData(106702950);
+async function main() {
+    // console.log(await getRouteData(118297380)); // Fugaku
+    console.log(await getRouteData(106702950)); // Different strokes
+}
+
+main();

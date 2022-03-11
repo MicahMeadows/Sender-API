@@ -1,5 +1,6 @@
 const express = require('express');
 const routeFinderHelper = require('./business/route-finder-api-helper');
+const areaScraper = require('./business/mp-area-scraping');
 
 const app = express();
 
@@ -23,31 +24,35 @@ app.post('/routes', async (req, res) => {
         searchFilters.showTopRope ? 1 : 0,
         searchFilters.ratingGroup,
         searchFilters.pitchesGroup,
-        searchFilters.filter1,
-        searchFilters.filter2
+        searchFilters.sort1,
+        searchFilters.sort1
     );
     console.log(`${routes.length} routes loaded`);
 
     res.status(200).send(routes);
 });
 
-// app.get('/routes/:id', async (req, res) => {
-//     const { id } = req.params;
+app.get('/areas', async (req, res) => {
+    // const { id } = req.params;
+    const id = req.query.id || 0;
+    console.log(`attemping to get areas for ${id}`);
 
-//     routeDetails = {
-//         routeId: id,
-//         gradeLower: '5.10a',
-//         gradeUpper: '5.12b',
-//         showTrad: true,
-//         showSport: true,
-//         showTopRope: true,
-//         minRating: 0.0,
-//         numPitches: 0,
-//         filter1: 'area',
-//         filter2: 'rating',
-//     };
-//     var routes = await routeFinderHelper.getRockClimbs(id, '5.10a', '5.10c');
+    try {
+        var subAreas = await areaScraper.getSubAreas(id);
 
-//     res.status(200).send(routes);
-//     console.log(`retreived and sent ${routes.length} routes`);
-// });
+        res.status(200).send(subAreas);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
+
+app.get('/route/:id', async (req, res) => {
+    const { id } = req.params;
+
+    if (id == '') {
+        res.status(400).send('Please enter a route id.');
+    }
+
+    res.status(400).send(`should get route data for ${id}`);
+
+});
