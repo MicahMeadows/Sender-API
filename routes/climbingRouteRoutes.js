@@ -4,21 +4,6 @@ const router = express.Router();
 const routeFinderHelper = require('../business/route-finder-api-helper');
 const routeScraper = require('../business/mp-route-scraping');
 
-router.get('/route-details/:id', async (req, res) => {
-    const { id } = req.params;
-
-    if (id == '') {
-        res.status(400).send('Please enter a route id.');
-    }
-
-    var result = await routeScraper.getRouteData(id);
-    if (result == null) {
-        res.status(404).send(`Could not find route for id ${id}`);
-    }
-    res.status(400).send(result);
-
-});
-
 router.post('/routes', async (req, res) => {
     const searchFilters = req.body;
     
@@ -37,6 +22,21 @@ router.post('/routes', async (req, res) => {
     console.log(`${routes.length} routes loaded`);
 
     res.status(200).send(routes);
+});
+
+router.get('/routes/details/:id', async (req, res) => {
+    const { id } = req.params;
+
+    if (id == '') {
+        res.status(400).send('Please enter a route id.');
+    }
+
+    var result = await routeScraper.getRouteData(id);
+    if (result == null) {
+        res.status(404).send(`Could not find route for id ${id}`);
+    }
+    res.status(400).send(result);
+
 });
 
 module.exports = router;
