@@ -70,7 +70,7 @@ async function getRouteData(routeId) {
             protection: protectionDiv.innerText,
             location: locationDiv.innerText,
             areas: areas,
-            routeImageUrls: imageUrls,
+            imageUrls: imageUrls,
         };
     });
 
