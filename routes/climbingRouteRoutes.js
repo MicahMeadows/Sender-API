@@ -31,12 +31,32 @@ router.get('/details/:id', async (req, res) => {
         res.status(400).send('Please enter a route id.');
     }
 
-    var result = await routeScraper.getRouteData(id);
+    var result = await routeScraper.getRouteData([id]);
     if (result == null) {
         res.status(404).send(`Could not find route for id ${id}`);
     }
     res.status(200).send(result);
+});
 
+router.post('/details', async (req, res) => {
+    const ids = req.body;
+    console.log(ids);
+
+    let routeIds = [];
+    try {
+        for (let i = 0; i < ids.length; i++) {
+            routeIds.push(ids[i].id);
+        }
+    } catch (e) {
+        res.status(400).send('Bad request, please check your input.');
+    }
+
+    if (routeIds.length == 0) {
+        res.status(404).send('There were no route ids found.');
+    } else {
+        let result = await routeScraper.getRouteData(routeIds);
+        res.status(200).send(result);
+    }
 });
 
 module.exports = router;

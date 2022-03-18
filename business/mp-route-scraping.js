@@ -3,16 +3,13 @@ const puppeteer = require('puppeteer');
 
 module.exports.getRouteData = getRouteData
 
-async function getRouteData(routeId) {
-    const routeRequestUrl = `https://www.mountainproject.com/route/${routeId}`;
-
-    let browser = await puppeteer.launch({headless: true});
-
+async function getRouteDetailsFromPage(browser, routeId) {
     let page = await browser.newPage();
-
+    let routeRequestUrl = `https://www.mountainproject.com/route/${routeId}`;
     await page.goto(routeRequestUrl, { waitUntil: 'networkidle2' });
+    console.log(`gonna eval ${routeId}`);
 
-    let routeDetails = await page.evaluate(() => {
+    return await page.evaluate(() => {
         const routeNameHeader = document.querySelector('#route-page > div > div.col-md-9.float-md-right.mb-1 > h1');
         const routeGradeSpan = document.querySelector('#route-page > div > div.col-md-9.float-md-right.mb-1 > h2 > span.rateYDS');
         const routeTypeTd = document.querySelector('#route-page > div > div.col-md-9.main-content.float-md-right > div.row > div.col-lg-7.col-md-6 > div.small.mb-1 > table > tbody > tr:nth-child(1) > td:nth-child(2)');
@@ -74,10 +71,22 @@ async function getRouteData(routeId) {
         };
     });
 
+}
+
+async function getRouteData(routeIds) {
+    let browser = await puppeteer.launch({headless: true});
+
+    var routesDetails = [];
+    for (let i = 0; i < routeIds.length; i++) {
+        let id = routeIds[i];
+        var route = await getRouteDetailsFromPage(browser, id);
+        route["routeId"] = id;
+        routesDetails.push(route);
+    }
+
     browser.close();
 
-    routeDetails["routeId"] = routeId;
-    return routeDetails;
+    return routesDetails;
 }
 
 // async function main() {
