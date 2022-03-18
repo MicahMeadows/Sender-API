@@ -3,7 +3,7 @@ const router = express.Router();
 
 const areaScraper = require('../business/mp-area-scraping');
 
-router.get('/areas/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const { id } = req.params || 0;
     // const id = req.query.id || 0;
     console.log(`attemping to get areas for ${id}`);

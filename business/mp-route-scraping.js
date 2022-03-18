@@ -60,11 +60,11 @@ async function getRouteData(routeId) {
         });
 
         return {
-            routeName: routeNameHeader.innerText,
-            routeGrade: routeGradeTextFix,
-            routeType: routeTypeTextFix,
-            routeRating: routeRating,
-            routeHeight: routeHeight,
+            name: routeNameHeader.innerText,
+            grade: routeGradeTextFix,
+            type: routeTypeTextFix,
+            rating: routeRating,
+            height: routeHeight,
             firstAscent: firstAscentTd.innerText,
             description: descriptionDiv.innerText,
             protection: protectionDiv.innerText,

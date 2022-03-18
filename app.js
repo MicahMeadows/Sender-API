@@ -4,7 +4,7 @@ const swaggerUi = require('swagger-ui-express');
 
 // routes
 const climbRouteRoutes = require('./routes/climbingRouteRoutes');
-const areaRoutes = require('./routes/areaRoutes');
+const areaRoutes = require('./routes/areasRoutes');
 
 const app = express();
 
@@ -30,8 +30,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(express.json());
 
-app.use(climbRouteRoutes);
-app.use(areaRoutes);
+app.use('/routes', climbRouteRoutes);
+app.use('/areas', areaRoutes);
 
 app.listen(
     PORT, () => console.log(`were live at http://localhost${PORT}`)

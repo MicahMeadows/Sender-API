@@ -4,7 +4,7 @@ const router = express.Router();
 const routeFinderHelper = require('../business/route-finder-api-helper');
 const routeScraper = require('../business/mp-route-scraping');
 
-router.post('/routes', async (req, res) => {
+router.post('/', async (req, res) => {
     const searchFilters = req.body;
     
     let routes = await routeFinderHelper.getRockClimbs(
@@ -24,7 +24,7 @@ router.post('/routes', async (req, res) => {
     res.status(200).send(routes);
 });
 
-router.get('/routes/details/:id', async (req, res) => {
+router.get('/details/:id', async (req, res) => {
     const { id } = req.params;
 
     if (id == '') {
