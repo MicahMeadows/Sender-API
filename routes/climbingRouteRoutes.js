@@ -35,7 +35,7 @@ router.get('/details/:id', async (req, res) => {
     if (result == null) {
         res.status(404).send(`Could not find route for id ${id}`);
     }
-    res.status(400).send(result);
+    res.status(200).send(result);
 
 });
 
