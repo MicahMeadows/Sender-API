@@ -50,8 +50,8 @@ async function getRouteData(routeId) {
             }
 
             return {
-                areaId: areaId,
-                areaName: areaNameWords.join(' '),
+                id: areaId,
+                name: areaNameWords.join(' '),
             };
         });
 
