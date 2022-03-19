@@ -28,7 +28,7 @@ async function getRouteData(routeIds) {
                 let url = `https://www.mountainproject.com/route/${routeId}`;
                 await page.goto(url);
 
-                return await page.evaluate(() => {
+                var result = await page.evaluate(() => {
                     const routeNameHeader = document.querySelector('#route-page > div > div.col-md-9.float-md-right.mb-1 > h1');
                     const routeGradeSpan = document.querySelector('#route-page > div > div.col-md-9.float-md-right.mb-1 > h2 > span.rateYDS');
                     const routeTypeTd = document.querySelector('#route-page > div > div.col-md-9.main-content.float-md-right > div.row > div.col-lg-7.col-md-6 > div.small.mb-1 > table > tbody > tr:nth-child(1) > td:nth-child(2)');
@@ -89,6 +89,8 @@ async function getRouteData(routeIds) {
                         imageUrls: imageUrls,
                     };
                 });
+                result["id"] = routeId;
+                return result;
             });
         }));
     });
