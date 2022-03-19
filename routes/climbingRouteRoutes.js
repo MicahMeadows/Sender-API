@@ -40,7 +40,6 @@ router.get('/details/:id', async (req, res) => {
 
 router.post('/details', async (req, res) => {
     const ids = req.body;
-    console.log(ids);
 
     let routeIds = [];
     try {
