@@ -72,7 +72,7 @@ async function getRouteData(routeIds) {
                     });
 
                     let imageUrls = Array.from(images).map(element => {
-                        return element.getAttribute('data-src').replace('smallMed', 'medium');
+                        return element.getAttribute('data-src').replace('smallMed', 'large');
                     });
 
                     return {
@@ -90,6 +90,7 @@ async function getRouteData(routeIds) {
                     };
                 });
                 result["id"] = routeId;
+                console.log(result);
                 return result;
             });
         }));
