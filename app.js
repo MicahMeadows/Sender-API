@@ -8,7 +8,7 @@ const areaRoutes = require('./routes/areasRoutes');
 
 const app = express();
 
-const PORT = 8080;
+const port = process.env.PORT || 8080;
 
 // Extended: https://swagger.io/specification/#infoObject
 const swaggerOptions = {
@@ -34,5 +34,5 @@ app.use('/routes', climbRouteRoutes);
 app.use('/areas', areaRoutes);
 
 app.listen(
-    PORT, () => console.log(`were live at http://localhost${PORT}`)
+    port, () => console.log(`were live at http://localhost:${port}`)
 );
