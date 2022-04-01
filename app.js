@@ -34,5 +34,5 @@ app.use('/routes', climbRouteRoutes);
 app.use('/areas', areaRoutes);
 
 app.listen(
-    port, () => console.log(`were live at http://localhost${port}`)
+    port, () => console.log(`were live at http://localhost:${port}`)
 );
