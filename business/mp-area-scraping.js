@@ -11,65 +11,58 @@ async function getSubAreas(parentAreaId = 0) {
 
     const subAreasRequestUrl = `https://www.mountainproject.com/ajax/public/area-picker-list/${parentAreaId}?mode=single&routes=0#`;
 
-    try {
 
-        let browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                "--disable-gpu",
-                "--no-sandbox",
-            ]
+    let browser = await puppeteer.launch({
+        headless: true,
+        args: [
+            "--disable-gpu",
+            "--no-sandbox",
+        ]
+    });
+
+    let page = await browser.newPage();
+
+    await page.goto(subAreasRequestUrl, { waitUntil: 'networkidle2' });
+
+    let selectedClassName = await page.$eval('div > strong', (area) => {
+        return area.parentElement.className;
+    });
+
+    let parentLevel = parseLevelFromClass(selectedClassName);
+    // console.log(`parent area level: ${parentLevel}`);
+
+
+    let areaData = await page.$$eval('div > a', (links) => {
+        let areas = [];
+        links.forEach((link) => {
+            let areaId = link.getAttribute('data-area-id');
+            let areaTitle = link.getAttribute('data-area-title');
+            let areaLevel = parseInt(link.parentElement.className.replace('l-', ''));
+
+            let areaInfo = {
+                "areaId": areaId,
+                "areaTitle": areaTitle,
+                "areaLevel": areaLevel
+            };
+            areas.push(areaInfo);
         });
-
-        let page = await browser.newPage();
-
-        await page.goto(subAreasRequestUrl, { waitUntil: 'networkidle2' });
-
-        let selectedClassName = await page.$eval('div > strong', (area) => {
-            return area.parentElement.className;
-        });
-
-        let parentLevel = parseLevelFromClass(selectedClassName);
-        console.log(`parent area level: ${parentLevel}`);
-
-        console.log('1. didnt break yet xD');
-
-        let areaData = await page.$$eval('div > a', (links) => {
-            let areas = [];
-            links.forEach((link) => {
-                let areaId = link.getAttribute('data-area-id');
-                let areaTitle = link.getAttribute('data-area-title');
-                let areaLevel = parseInt(link.parentElement.className.replace('l-', ''));
-
-                let areaInfo = {
-                    "areaId": areaId,
-                    "areaTitle": areaTitle,
-                    "areaLevel": areaLevel
-                };
-                areas.push(areaInfo);
-            });
         
-            return areas;
-        });
+        return areas;
+    });
 
-        console.log('2. didnt break yet xD');
+    const numResults = areaData.length;
 
-        const numResults = areaData.length;
+    const lastArea = areaData[numResults-1];
+    console.log(`last area level: ${lastArea.areaLevel}`);
 
-        const lastArea = areaData[numResults-1];
-        console.log(`last area level: ${lastArea.areaLevel}`);
+    await browser.close();
 
-        await browser.close();
-
-        if (parentLevel == lastArea.areaLevel) {
-            console.log('is leaf node');
-            return [];
-        } else {
-            console.log(areaData);
-            return areaData;
-        }
-    } catch (e) {
-        console.log(e);
+    if (parentLevel == lastArea.areaLevel) {
+        console.log('is leaf node');
+        return [];
+    } else {
+        console.log(areaData);
+        return areaData;
     }
 };
 

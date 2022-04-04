@@ -96,7 +96,7 @@ async function getRouteData(routeIds) {
                     };
                 });
                 result["id"] = routeId;
-                console.log(result);
+                // console.log(result);
                 return result;
             });
         }));
