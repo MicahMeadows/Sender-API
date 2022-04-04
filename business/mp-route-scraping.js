@@ -1,36 +1,11 @@
-
 const puppeteer = require('puppeteer');
+const scrapingHelpers = require('../business/puppeteer_helpers');
 
-module.exports.getRouteData = getRouteData
-
-const withBrowser = async (fn) => {
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: [
-            "--disable-gpu",
-            "--no-sandbox",
-        ]
-    });
-    try {
-        return await fn(browser);
-    } finally {
-        await browser.close();
-    }
-}
-
-const withPage = (browser) => async (fn) => {
-    const page = await browser.newPage();
-    try {
-        return await fn(page);
-    } finally {
-        await page.close();
-    }
-}
 
 async function getRouteData(routeIds) {
-    const results = await withBrowser(async (browser) => {
+    const results = await scrapingHelpers.withBrowser(async (browser) => {
         return Promise.all(routeIds.map(async (routeId) => {
-            return withPage(browser)(async (page) => {
+            return scrapingHelpers.withPage(browser)(async (page) => {
                 let url = `https://www.mountainproject.com/route/${routeId}`;
                 await page.goto(url);
 
@@ -105,6 +80,7 @@ async function getRouteData(routeIds) {
     return results;
 }
 
+module.exports.getRouteData = getRouteData
 // async function main() {
 //     // console.log(await getRouteData(118297380)); // Fugaku
 //     console.log(await getRouteData(106702950)); // Different strokes

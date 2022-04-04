@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const scrapingHelpers = require('../business/puppeteer_helpers');
 
 module.exports.getSubAreas = getSubAreas
 
