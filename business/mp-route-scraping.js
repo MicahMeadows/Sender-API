@@ -4,7 +4,13 @@ const puppeteer = require('puppeteer');
 module.exports.getRouteData = getRouteData
 
 const withBrowser = async (fn) => {
-    const browser = await puppeteer.launch({});
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: [
+            "--disable-gpu",
+            "--no-sandbox",
+        ]
+    });
     try {
         return await fn(browser);
     } finally {
