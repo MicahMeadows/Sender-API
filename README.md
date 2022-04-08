@@ -1,5 +1,5 @@
 # Sender API
-### Api for accessing data related to Sender mobile app.
+### Api for accessing data related to  [Sender App](https://github.com/micahmeadows/sender)
 ---
 
 ## Description:
