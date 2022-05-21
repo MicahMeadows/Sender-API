@@ -3,8 +3,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 // routes
-const climbingRouteRoutes = require('./routes/climbingRouteRoutes');
-const areaRoutes = require('./routes/areasRoutes');
+const climbingRouteRoutes = require('./view/climbingRouteRoutes');
+const areaRoutes = require('./view/areasRoutes');
 
 const app = express();
 
