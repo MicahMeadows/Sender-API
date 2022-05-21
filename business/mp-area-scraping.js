@@ -1,7 +1,10 @@
 const puppeteer = require('puppeteer');
 const scrapingHelpers = require('../business/puppeteer_helpers');
+const areaRoutes = require('../routes/areasRoutes');
 
 module.exports.getSubAreas = getSubAreas
+
+
 
 function parseLevelFromClass(classLevel) {
     let fixedLevel = classLevel.replace('l-', '');
