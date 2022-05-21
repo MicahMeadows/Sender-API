@@ -1,5 +1,5 @@
-const routeFinderHelper = require('../business/route-finder-api-helper');
-const routeScraper = require('../business/mp-route-scraping');
+const routeFinderHelper = require('../models/mp-route-finder');
+const routeScraper = require('../models/mp-route-scraping');
 
 var findRoutesWithFilters = async (req, res) => {
     const searchFilters = req.body;

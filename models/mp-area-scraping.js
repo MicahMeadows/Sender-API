@@ -1,8 +1,6 @@
 const puppeteer = require('puppeteer');
-const scrapingHelpers = require('../business/puppeteer_helpers');
-const areaRoutes = require('../routes/areasRoutes');
+const scrapingHelpers = require('./puppeteer_helpers');
 
-module.exports.getSubAreas = getSubAreas
 
 
 
@@ -73,3 +71,5 @@ async function getSubAreas(parentAreaId = 0) {
 // const KENTUCKY_ID = 105868674;
 
 // getSubAreas(KENTUCKY_ID);
+
+module.exports = { getSubAreas };

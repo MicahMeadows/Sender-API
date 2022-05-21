@@ -1,4 +1,4 @@
-const areaScraper = require('../business/mp-area-scraping');
+const areaScraper = require('../models/mp-area-scraping');
 
 var getAreasWithId = async (req, res) => {
     const { id } = req.params || 0;

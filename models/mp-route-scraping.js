@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const scrapingHelpers = require('../business/puppeteer_helpers');
+const scrapingHelpers = require('./puppeteer_helpers');
 
 
 async function getRouteData(routeIds) {
@@ -70,9 +70,11 @@ async function getRouteData(routeIds) {
                         imageUrls: imageUrls,
                     };
                 });
-                result["id"] = routeId;
-                // console.log(result);
-                return result;
+
+                return {
+                    id: routeId,
+                    ...result
+                };
             });
         }));
     });
@@ -80,10 +82,11 @@ async function getRouteData(routeIds) {
     return results;
 }
 
-module.exports.getRouteData = getRouteData
 // async function main() {
 //     // console.log(await getRouteData(118297380)); // Fugaku
 //     console.log(await getRouteData(106702950)); // Different strokes
 // }
 
 // main();
+
+module.exports = { getRouteData };

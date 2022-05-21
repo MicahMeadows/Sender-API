@@ -1,8 +1,5 @@
 const axios = require('axios');
 
-module.exports.getRoutes = getRoutes
-module.exports.getRockClimbs = getRockClimbs
-
 const routeGradeValues = {
     '3rd': 800, '4th': 900,
     '5.0': 1000, '5.1': 1100, '5.2': 1200, '5.3': 1300, '5.4': 1400,
@@ -88,4 +85,9 @@ async function getRoutes(url) {
     }
 
     return routesJson;
+}
+
+module.exports = {
+    getRoutes,
+    getRockClimbs
 }

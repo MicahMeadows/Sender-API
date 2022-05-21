@@ -27,5 +27,7 @@ const withPage = (browser) => async (fn) => {
     }
 }
 
-module.exports.withBrowser = withBrowser;
-module.exports.withPage = withPage; 
+module.exports = {
+    withBrowser,
+    withPage
+}
