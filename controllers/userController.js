@@ -1,4 +1,22 @@
-const preferences = require('../models/profile/preferences');
+const preferences = require('../models/user/user');
+const userModel = require('../models/user/user');
+
+var createUser = async (req, res) => {
+    try {
+        const firestore = req.service.firestore;
+        const uid = req.uid;
+        const name = req.body.name;
+
+        const newUser = await userModel.createUser(firestore, {
+            uid: uid,
+            name: name,
+        });
+
+        res.status(200).send(newUser);
+    } catch (ex) {
+        res.status(400).send(`Failed to create user. ${ex}`);
+    }
+}
 
 var getPreferences = async (req, res) => {
     try {
@@ -19,13 +37,13 @@ var getPreferences = async (req, res) => {
     }
 };
 
-var postPreferences = async (req, res) => {
+var updatePreferences = async (req, res) => {
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
         const newPreferences = req.body;
 
-        await preferences.setUserPreferences(firestore, uid, newPreferences);
+        await preferences.updatePreferences(firestore, uid, newPreferences);
 
         res.status(200).send(newPreferences);
     } catch (ex) {
@@ -37,5 +55,6 @@ var postPreferences = async (req, res) => {
 
 module.exports = {
     getPreferences,
-    postPreferences,
+    updatePreferences,
+    createUser,
 }

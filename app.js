@@ -12,7 +12,7 @@ const checkAuth = require('./middleware/firebaseAuth');
 // routes
 const climbingRouteRoutes = require('./view/climbingRouteRoutes');
 const areaRoutes = require('./view/areasRoutes');
-const profileRoutes = require('./view/profileRoutes');
+const userRoutes = require('./view/userRoutes');
 
 
 firebaseAdmin.initializeApp({
@@ -56,14 +56,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(express.json());
 
-// app.use('/profile', exposeFirebaseServices, checkAuth);
-// app.use('/areas', exposeFirebaseServices);
-
 app.use('/routes/queue', checkAuth);
 
 app.use('/routes', exposeFirebaseServices, climbingRouteRoutes);
 app.use('/areas', exposeFirebaseServices, areaRoutes);
-app.use('/profile', exposeFirebaseServices, checkAuth, profileRoutes);
+app.use('/user', exposeFirebaseServices, checkAuth, userRoutes);
 
 app.listen(
     port, () => console.log(`were live at http://localhost:${port}`)

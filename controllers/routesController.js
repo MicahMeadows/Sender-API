@@ -1,7 +1,8 @@
 const routeFinderHelper = require('../models/mp-route-finder');
 const routeScraper = require('../models/mp-route-scraping');
-const profileController = require('../controllers/profileController').default;
+const userController = require('./userController').default;
 const routesData =require('../models/routes/routes');
+const userData = require('../models/user/user');
 
 var findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;
@@ -54,9 +55,10 @@ var getQueueRoutes = async (req, res) => {
         const uid = req.uid;
 
         // get preferences for user
-        const userPreferencesDocRef = firestore.collection('preferences').doc(uid);
-        const userPreferencesResult = await userPreferencesDocRef.get();
-        const userPreferences = userPreferencesResult.data();
+        // const userPreferencesDocRef = firestore.collection('preferences').doc(uid);
+        // const userPreferencesResult = await userPreferencesDocRef.get();
+        // const userPreferences = userPreferencesResult.data();
+        const userPreferences = await userData.getUserPreferences(firestore, uid);
 
         // get routes based on preferences
         var routes = await routesData.getRoutesWithPreferences(userPreferences);
