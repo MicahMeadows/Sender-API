@@ -15,7 +15,6 @@ async function getRouteData(routeIds) {
                     const routeTypeTd = document.querySelector('#route-page > div > div.col-md-9.main-content.float-md-right > div.row > div.col-lg-7.col-md-6 > div.small.mb-1 > table > tbody > tr:nth-child(1) > td:nth-child(2)');
                     const routeRatingSpan = document.querySelector('a.show-tooltip:nth-child(1)').children[0];
                     const firstAscentTd = document.querySelector('.description-details > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)');
-                    // const descriptionDiv = document.querySelector('div.mt-2:nth-child(1) > div:nth-child(3)');
                     const descriptionDiv = document.querySelector('#route-page > div > div.col-md-9.main-content.float-md-right > div.row > div.col-xs-12 > div:nth-child(2) > div');
                     const protectionDiv = document.querySelector('div.max-height:nth-child(3) > div:nth-child(3)');
                     const locationDiv = document.querySelector('div.max-height:nth-child(2) > div:nth-child(3)');
@@ -49,6 +48,7 @@ async function getRouteData(routeIds) {
 
                         return {
                             id: areaId,
+                            shortName: element.innerText,
                             name: areaNameWords.join(' '),
                         };
                     });
