@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const scrapingHelpers = require('./puppeteer_helpers');
+const scrapingHelpers = require('./puppeteer-helpers');
 
 
 async function getRouteData(routeIds) {

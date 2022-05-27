@@ -1,5 +1,3 @@
-// const { route } = require("../../view/climbingRouteRoutes");
-
 async function addToRouteList(firestore, collectionName, uid, routeToAdd) {
     const routeToAddId = routeToAdd.routeId;
     const collectionRef = firestore.collection('users').doc(`${uid}`).collection(collectionName).doc(`${routeToAddId}`);

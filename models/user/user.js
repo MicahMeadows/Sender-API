@@ -1,4 +1,4 @@
-const routeLogging = require('./routeLogging');
+const routeLogging = require('../route-logging/route-logging');
 
 async function createUser(firestore, userData) {
         const userRef = firestore.collection('users').doc(userData.uid);

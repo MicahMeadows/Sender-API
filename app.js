@@ -10,9 +10,9 @@ const checkAuth = require('./middleware/firebaseAuth');
 
 
 // routes
-const climbingRouteRoutes = require('./view/climbingRouteRoutes');
-const areaRoutes = require('./view/areasRoutes');
-const userRoutes = require('./view/userRoutes');
+const climbingRouteRoutes = require('./view/climbing-route-routes');
+const areaRoutes = require('./view/areas-routes');
+const userRoutes = require('./view/user-routes');
 
 
 firebaseAdmin.initializeApp({

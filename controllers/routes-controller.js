@@ -1,6 +1,6 @@
 const routeFinderHelper = require('../models/mp-route-finder');
 const routeScraper = require('../models/mp-route-scraping');
-const userController = require('./userController').default;
+const userController = require('./user-controller').default;
 const routesData =require('../models/routes/routes');
 const userData = require('../models/user/user');
 
