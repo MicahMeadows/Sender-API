@@ -17,20 +17,18 @@ var findRoutesWithFilters = async (req, res) => {
 var findRouteDetails =  async (req, res) => {
     const ids = req.body;
 
-    let routeIds = [];
-    try {
-        for (let i = 0; i < ids.length; i++) {
-            routeIds.push(ids[i].id);
-        }
-    } catch (e) {
-        res.status(400).send('Bad request, please check your input.');
-    }
+    let routeIds = ids.map(id => id.id);
 
     if (routeIds.length == 0) {
-        res.status(404).send('There were no route ids found.');
-    } else {
-        let result = await routeScraper.getRouteData(routeIds);
-        res.status(200).send(result);
+        throw 'No ids found.';
+    }
+
+    try {
+        const routeResults = await routeScraper.getRouteData(routeIds);
+        res.status(200).send(routeResults);
+
+    } catch (ex) {
+        res.status(400).send(`Error retreiving route details: ${ex}`);
     }
 }
 

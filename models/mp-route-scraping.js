@@ -15,14 +15,14 @@ async function getRouteData(routeIds) {
                     const routeTypeTd = document.querySelector('#route-page > div > div.col-md-9.main-content.float-md-right > div.row > div.col-lg-7.col-md-6 > div.small.mb-1 > table > tbody > tr:nth-child(1) > td:nth-child(2)');
                     const routeRatingSpan = document.querySelector('a.show-tooltip:nth-child(1)').children[0];
                     const firstAscentTd = document.querySelector('.description-details > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)');
-                    const descriptionDiv = document.querySelector('div.mt-2:nth-child(1) > div:nth-child(3)');
+                    // const descriptionDiv = document.querySelector('div.mt-2:nth-child(1) > div:nth-child(3)');
+                    const descriptionDiv = document.querySelector('#route-page > div > div.col-md-9.main-content.float-md-right > div.row > div.col-xs-12 > div:nth-child(2) > div');
                     const protectionDiv = document.querySelector('div.max-height:nth-child(3) > div:nth-child(3)');
                     const locationDiv = document.querySelector('div.max-height:nth-child(2) > div:nth-child(3)');
                     const areaLinks = document.querySelector('div.col-md-9:nth-child(1) > div:nth-child(2)').children;
                     const images = document.querySelectorAll('div.col-xs-4.col-lg-3.card-with-photo > a > div > img');
 
                     let routeGradeTextFix = routeGradeSpan.innerText.split(' ')[0];
-
                     let routeTypeTdText = routeTypeTd.innerText;
                     let routeTypeTextFix = routeTypeTdText.substring(0, routeTypeTdText.indexOf(','));
                     let routeHeightText = routeTypeTdText.replace(`${routeTypeTextFix}, `, '');
@@ -34,6 +34,7 @@ async function getRouteData(routeIds) {
                     routeRatingSpanText = routeRatingSpanText.replace('Avg: ', '');
                     routeRatingSpanText = routeRatingSpanText.substring(0, routeRatingSpanText.indexOf(' '));
                     let routeRating = parseFloat(routeRatingSpanText);
+
 
                     let areas = Array.from(areaLinks).map(element => {
                         let areaLinkText = element.getAttribute('href');
@@ -52,6 +53,7 @@ async function getRouteData(routeIds) {
                         };
                     });
 
+                    
                     let imageUrls = Array.from(images).map(element => {
                         return element.getAttribute('data-src').replace('smallMed', 'large');
                     });

@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const withBrowser = async (fn) => {
     const browser = await puppeteer.launch({
         userDataDir: '/tmp/session-123',
-        headless: true,
+        headless: false,
         args: [
             "--disable-gpu",
             "--no-sandbox",

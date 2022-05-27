@@ -1,5 +1,4 @@
 const axios = require('axios');
-const routeFinder = require('../mp-route-finder');
 
 function getIdFromUrl(url) {
     /* url format:
@@ -12,13 +11,9 @@ function getIdFromUrl(url) {
 }
 
 async function getRouteFinderRoutesWithPreferences(preferences) {
-    
-    
-
     const routes = await getRouteFinderRoutes(preferences);
 
     return routes;
-
 }
 
 function getRouteGradeValue(routeGrade) {

@@ -48,8 +48,4 @@ module.exports = {
     setRoute,
     removeRoute,
     getRoutes,
-    // addTodo,
-    // removeTodo,
-    // addSend,
-    // removeSend,
 }
