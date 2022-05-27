@@ -72,4 +72,4 @@ async function getSubAreas(parentAreaId = 0) {
 
 // getSubAreas(KENTUCKY_ID);
 
-module.exports = { getSubAreas };
+module.exports = { getSubAreas};

@@ -4,27 +4,12 @@ const routeScraper = require('../models/mp-route-scraping');
 const userController = require('./user-controller').default;
 const routesData =require('../models/routes/routes');
 const userData = require('../models/user/user');
+const routeLogging = require('../models/route-logging/route-logging');
 
 var findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;
 
     const routes = await routesData.getRoutesWithPreferences(preferences);
-
-    // const searchFilters = req.body;
-    
-    // let routes = await routeFinderHelper.getRockClimbs(
-    //     searchFilters.areaId,
-    //     searchFilters.minYds,
-    //     searchFilters.maxYds,
-    //     searchFilters.showTrad ? 1 : 0,
-    //     searchFilters.showSport ? 1 : 0,
-    //     searchFilters.showTopRope ? 1 : 0,
-    //     searchFilters.ratingGroup,
-    //     searchFilters.pitchesGroup,
-    //     searchFilters.sort1,
-    //     searchFilters.sort2
-    // );
-    // console.log(`${routes.length} routes loaded`);
 
     res.status(200).send(routes);
 }
@@ -56,7 +41,6 @@ var getQueueRoutes = async (req, res) => {
         const uid = req.uid;
 
         // get preferences for user
-        
         const userPreferences = await userData.getUserPreferences(firestore, uid);
             
         if (userPreferences == null) {
@@ -67,10 +51,12 @@ var getQueueRoutes = async (req, res) => {
         var routes = await routesData.getRoutesWithPreferences(userPreferences);
 
         // remove sent and todod and skipped
-        // return routes
-        var savedRoutes = await routesData.getSavedRoutes(firestore, uid);
+        var savedRoutes = await routeLogging.getRoutes(firestore, uid);
+        var idsToRemove = savedRoutes.map(route => route.id);
+        var filteredRoutes = routes.filter(({ id }) => !idsToRemove.includes(id));
 
-        res.status(200).send(routes);
+        // return routes
+        res.status(200).send(filteredRoutes);
 
     } catch (ex) {
         res.status(400).send(`Error retreiving queue routes: ${ex}`);

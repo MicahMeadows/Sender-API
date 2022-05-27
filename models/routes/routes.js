@@ -1,4 +1,5 @@
 const axios = require('axios');
+const routeFinder = require('../mp-route-finder');
 
 async function getRoutesWithPreferences(preferences) {
     
@@ -77,7 +78,7 @@ async function getRoutes(url) {
         return _header.replace(/['"]+/g, '');
     });
 
-    let routesJson = [];
+    let routes = [];
     for (let row = 1; row < rows.length; row++) {
         const attributesCount = rows[row].length;
         const rowData = rows[row].split(',');
@@ -85,14 +86,17 @@ async function getRoutes(url) {
         if (rowData.length != attributeHeaders.length)
             continue;
 
-        let jsonObject = {};
+        let route = {};
         for (let col = 0; col < attributesCount; col++) {
-            jsonObject[attributeHeaders[col]] = rowData[col];
+            route[attributeHeaders[col]] = rowData[col];
         }
-        routesJson.push(jsonObject);
+        const url = route['URL'];
+        route.id = routeFinder.getIdFromUrl(url);
+
+        routes.push(route);
     }
 
-    return routesJson;
+    return routes;
 }
 
 module.exports = {

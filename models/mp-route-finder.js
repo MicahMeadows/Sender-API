@@ -1,5 +1,15 @@
 const axios = require('axios');
 
+function getIdFromUrl(url) {
+    /* url format:
+        https://www.mountainproject.com/route/<id>/<name>
+    */
+
+    const split = url.split('/');
+    const id = split[4];
+    return id;
+}
+
 const routeGradeValues = {
     '3rd': 800, '4th': 900,
     '5.0': 1000, '5.1': 1100, '5.2': 1200, '5.3': 1300, '5.4': 1400,
@@ -89,5 +99,6 @@ async function getRoutes(url) {
 
 module.exports = {
     getRoutes,
-    getRockClimbs
+    getRockClimbs,
+    getIdFromUrl,
 }
