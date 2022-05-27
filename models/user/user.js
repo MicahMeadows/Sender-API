@@ -1,3 +1,5 @@
+const routeLogging = require('./routeLogging');
+
 async function createUser(firestore, userData) {
         const userRef = firestore.collection('users').doc(userData.uid);
         
@@ -37,7 +39,7 @@ async function updatePreferences(firestore, uid, preferences) {
 
 
 module.exports = {
-    getUserPreferences,
-    updatePreferences,
-    createUser,
+        getUserPreferences,
+        updatePreferences,
+        createUser,
 }
