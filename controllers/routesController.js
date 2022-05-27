@@ -41,8 +41,28 @@ var findRouteDetails =  async (req, res) => {
     }
 }
 
-var getQueueRoutes = (req, res) => {
-    res.status(200).send('get queue...');
+var getQueueRoutes = async (req, res) => {
+    
+    try {
+        const firestore = req.service.firestore;
+        const uid = req.uid;
+
+        // get preferences for user
+        const userPreferencesDocRef = firestore.collection('preferences').doc(uid);
+        const userPreferencesResult = await userPreferencesDocRef.get();
+        const userPreferences = userPreferencesResult.data();
+
+        // get routes based on preferences
+
+
+        // remove sent and todod and skipped
+        // return routes
+
+        res.status(200).send(userPreferences);
+
+    } catch (ex) {
+        res.status(400).send(`Error retreiving queue routes: ${ex}`);
+    }
 }
 
 module.exports = {

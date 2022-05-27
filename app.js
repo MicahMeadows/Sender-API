@@ -61,7 +61,7 @@ app.use(express.json());
 
 app.use('/routes/queue', checkAuth);
 
-app.use('/routes', climbingRouteRoutes);
+app.use('/routes', exposeFirebaseServices, climbingRouteRoutes);
 app.use('/areas', exposeFirebaseServices, areaRoutes);
 app.use('/profile', exposeFirebaseServices, checkAuth, profileRoutes);
 
