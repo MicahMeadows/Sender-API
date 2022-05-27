@@ -1,22 +1,28 @@
 const routeFinderHelper = require('../models/mp-route-finder');
 const routeScraper = require('../models/mp-route-scraping');
+const profileController = require('../controllers/profileController').default;
+const routesData =require('../models/routes/routes');
 
 var findRoutesWithFilters = async (req, res) => {
-    const searchFilters = req.body;
+    const preferences = req.body;
+
+    const routes = await routesData.getRoutesWithPreferences(preferences);
+
+    // const searchFilters = req.body;
     
-    let routes = await routeFinderHelper.getRockClimbs(
-        searchFilters.areaId,
-        searchFilters.minYds,
-        searchFilters.maxYds,
-        searchFilters.showTrad ? 1 : 0,
-        searchFilters.showSport ? 1 : 0,
-        searchFilters.showTopRope ? 1 : 0,
-        searchFilters.ratingGroup,
-        searchFilters.pitchesGroup,
-        searchFilters.sort1,
-        searchFilters.sort2
-    );
-    console.log(`${routes.length} routes loaded`);
+    // let routes = await routeFinderHelper.getRockClimbs(
+    //     searchFilters.areaId,
+    //     searchFilters.minYds,
+    //     searchFilters.maxYds,
+    //     searchFilters.showTrad ? 1 : 0,
+    //     searchFilters.showSport ? 1 : 0,
+    //     searchFilters.showTopRope ? 1 : 0,
+    //     searchFilters.ratingGroup,
+    //     searchFilters.pitchesGroup,
+    //     searchFilters.sort1,
+    //     searchFilters.sort2
+    // );
+    // console.log(`${routes.length} routes loaded`);
 
     res.status(200).send(routes);
 }
@@ -53,12 +59,12 @@ var getQueueRoutes = async (req, res) => {
         const userPreferences = userPreferencesResult.data();
 
         // get routes based on preferences
-
+        var routes = await routesData.getRoutesWithPreferences(userPreferences);
 
         // remove sent and todod and skipped
         // return routes
 
-        res.status(200).send(userPreferences);
+        res.status(200).send(routes);
 
     } catch (ex) {
         res.status(400).send(`Error retreiving queue routes: ${ex}`);
