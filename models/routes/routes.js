@@ -1,23 +1,21 @@
 const axios = require('axios');
 const routeFinder = require('../mp-route-finder');
 
+function getIdFromUrl(url) {
+    /* url format:
+        https://www.mountainproject.com/route/<id>/<name>
+    */
+
+    const split = url.split('/');
+    const id = split[4];
+    return id;
+}
+
 async function getRouteFinderRoutesWithPreferences(preferences) {
     
-    const requestUrl = makeRockClimbCsvRequestUrl({
-        areaId: preferences.areaId,
-        type: 'rock',
-        gradeMin: getRouteGradeValue(preferences.minGrade),
-        gradeMax: getRouteGradeValue(preferences.maxGrade),
-        qualityRange: starValueFromPreferences(preferences.minStars), // find values for stars 
-        numPitches: preferences.showMultipitch ? 0 : 1, // find values for pitches
-        filter1: 'area',
-        filter2: 'rating',
-        showTrad: preferences.showTrad,
-        showSport: preferences.showSport,
-        showTopRope: preferences.showTopRope,
-    });
+    
 
-    const routes = await getRouteFinderRoutes(requestUrl);
+    const routes = await getRouteFinderRoutes(preferences);
 
     return routes;
 
@@ -51,26 +49,43 @@ function starValueFromPreferences(minStars) {
     }
 }
 
+function fixFormatting(source) {
+    return source.replaceAll('\"', '');
+}
+
 function makeRockClimbCsvRequestUrl(settings){ 
-        const BASE_URL = 'https://www.mountainproject.com/route-finder-export';
-        const ROCK_CLIMBS_REQUEST_URL = BASE_URL + '?' +
-        `selectedIds=${settings.areaId}&` +
-        `type=${settings.type}&` +
-        `diffMinrock=${settings.gradeMin}&` +
-        `diffMaxrock=${settings.gradeMax}&` +
-        `stars=${settings.qualityRange}&` +
-        `pitches=${settings.numPitches}&` +
-        `sort1=${settings.filter1}&` +
-        `sort2=${settings.filter2}&` +
-        `is_trad_climb=${settings.showTrad}&` +
-        `is_sport_climb=${settings.showSport}&` +
-        `is_top_rope=${settings.showTopRope}&`;
+    const BASE_URL = 'https://www.mountainproject.com/route-finder-export';
+    const ROCK_CLIMBS_REQUEST_URL = BASE_URL + '?' +
+    `selectedIds=${settings.areaId}&` +
+    `type=${settings.type}&` +
+    `diffMinrock=${settings.gradeMin}&` +
+    `diffMaxrock=${settings.gradeMax}&` +
+    `stars=${settings.qualityRange}&` +
+    `pitches=${settings.numPitches}&` +
+    `sort1=${settings.filter1}&` +
+    `sort2=${settings.filter2}&` +
+    `is_trad_climb=${settings.showTrad}&` +
+    `is_sport_climb=${settings.showSport}&` +
+    `is_top_rope=${settings.showTopRope}&`;
 
-        return ROCK_CLIMBS_REQUEST_URL;
-    }
+    return ROCK_CLIMBS_REQUEST_URL;
+}
 
-async function getRouteFinderRoutes(url) {
-    const csvResponse = await axios.get(url);
+async function getRouteFinderRoutes(preferences) {
+    const requestUrl = makeRockClimbCsvRequestUrl({
+        areaId: preferences.areaId,
+        type: 'rock',
+        gradeMin: getRouteGradeValue(preferences.minGrade),
+        gradeMax: getRouteGradeValue(preferences.maxGrade),
+        qualityRange: starValueFromPreferences(preferences.minStars), // find values for stars 
+        numPitches: preferences.showMultipitch ? 0 : 1, // find values for pitches
+        filter1: 'area',
+        filter2: 'rating',
+        showTrad: preferences.showTrad,
+        showSport: preferences.showSport,
+        showTopRope: preferences.showTopRope,
+    });
+    const csvResponse = await axios.get(requestUrl);
     const csvData = csvResponse.data;
 
     const rows = csvData.split('\n');
@@ -91,9 +106,19 @@ async function getRouteFinderRoutes(url) {
             route[attributeHeaders[col]] = rowData[col];
         }
         const url = route['URL'];
-        route.id = routeFinder.getIdFromUrl(url);
+        const routeId = getIdFromUrl(url);
 
-        routes.push(route);
+        routes.push({
+            id: routeId,
+            name: fixFormatting(route.Route),
+            area: fixFormatting(route.Location),
+            rating: route['Avg Stars'],
+            type: fixFormatting(route['Route Type']),
+            pitches: route.Pitches,
+            length: route.Length,
+            longitude: route['Area Longitude'],
+            latitude: route['Area Latitude'],
+        });
     }
 
     return routes;
