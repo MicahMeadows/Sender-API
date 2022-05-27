@@ -44,7 +44,7 @@ async function getSubAreas(parentAreaId = 0) {
             let areaInfo = {
                 "areaId": areaId,
                 "areaTitle": areaTitle,
-                "areaLevel": areaLevel
+                // "areaLevel": areaLevel
             };
             areas.push(areaInfo);
         });
