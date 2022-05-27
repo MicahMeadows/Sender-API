@@ -41,7 +41,12 @@ var findRouteDetails =  async (req, res) => {
     }
 }
 
+var getQueueRoutes = (req, res) => {
+    res.status(200).send('get queue...');
+}
+
 module.exports = {
     findRouteDetails,
-    findRoutesWithFilters
+    findRoutesWithFilters,
+    getQueueRoutes
 }

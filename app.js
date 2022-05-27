@@ -21,14 +21,14 @@ firebaseAdmin.initializeApp({
 
 const firestore = getFirestore();
 
-const firebaseService = () => {
+const firebaseServices = () => {
     return Object.freeze({
         firestore,
     });
 };
 
-const exposeFirebaseService = (req, res, next) => {
-    req.service = firebaseService();
+const exposeFirebaseServices = (req, res, next) => {
+    req.service = firebaseServices();
     next();
 }
 
@@ -56,11 +56,14 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(express.json());
 
-app.use('/profile', exposeFirebaseService, checkAuth);
+// app.use('/profile', exposeFirebaseServices, checkAuth);
+// app.use('/areas', exposeFirebaseServices);
+
+app.use('/routes/queue', checkAuth);
 
 app.use('/routes', climbingRouteRoutes);
-app.use('/areas', areaRoutes);
-app.use('/profile', profileRoutes);
+app.use('/areas', exposeFirebaseServices, areaRoutes);
+app.use('/profile', exposeFirebaseServices, checkAuth, profileRoutes);
 
 app.listen(
     port, () => console.log(`were live at http://localhost:${port}`)
