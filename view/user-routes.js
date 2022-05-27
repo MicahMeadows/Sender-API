@@ -10,12 +10,9 @@ router.post('/', userController.createUser);
 router.get('/preferences', userController.getPreferences);
 router.patch('/preferences', userController.updatePreferences);
 
-// todo
-router.post('/todo', routeLoggingController.addTodo);
-router.delete('/todo/:id', routeLoggingController.removeTodo);
-
-// send
-router.post('/send', routeLoggingController.addSend);
-router.delete('/send/:id', routeLoggingController.removeSend);
+// route
+router.post('/route', routeLoggingController.setRoute);
+router.delete('/route/:id', routeLoggingController.removeRoute);
+router.get('/route', routeLoggingController.getRoutes);
 
 module.exports = router;

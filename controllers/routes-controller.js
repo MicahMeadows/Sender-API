@@ -1,3 +1,4 @@
+const { ExecutionContext } = require('puppeteer');
 const routeFinderHelper = require('../models/mp-route-finder');
 const routeScraper = require('../models/mp-route-scraping');
 const userController = require('./user-controller').default;
@@ -55,16 +56,19 @@ var getQueueRoutes = async (req, res) => {
         const uid = req.uid;
 
         // get preferences for user
-        // const userPreferencesDocRef = firestore.collection('preferences').doc(uid);
-        // const userPreferencesResult = await userPreferencesDocRef.get();
-        // const userPreferences = userPreferencesResult.data();
+        
         const userPreferences = await userData.getUserPreferences(firestore, uid);
+            
+        if (userPreferences == null) {
+            throw 'No user preferences found.';
+        }
 
         // get routes based on preferences
         var routes = await routesData.getRoutesWithPreferences(userPreferences);
 
         // remove sent and todod and skipped
         // return routes
+        var savedRoutes = await routesData.getSavedRoutes(firestore, uid);
 
         res.status(200).send(routes);
 

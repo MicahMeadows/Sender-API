@@ -23,10 +23,14 @@ async function createUser(firestore, userData) {
 }
 
 async function getUserPreferences(firestore, uid) {
-        const userRef = firestore.collection('users').doc(uid);
-        const userDoc = await userRef.get();
-        const userData = userDoc.data();
-        return userData.preferences;
+        try {
+                const userRef = firestore.collection('users').doc(uid);
+                const userDoc = await userRef.get();
+                const userData = userDoc.data();
+                return userData.preferences;
+        } catch (ex) {
+                throw `Failed to get user preferences: ${ex}`;
+        }
 };
 
 async function updatePreferences(firestore, uid, preferences) {

@@ -1,39 +1,47 @@
-async function addToRouteList(firestore, collectionName, uid, routeToAdd) {
-    const routeToAddId = routeToAdd.routeId;
-    const collectionRef = firestore.collection('users').doc(`${uid}`).collection(collectionName).doc(`${routeToAddId}`);
+var getRoutesCollection = (firestore, uid) => firestore.collection('users').doc(`${uid}`).collection('routes');
 
-    const addRoute = await collectionRef.set({
-        routeName: routeToAdd.routeName,
-        grade: routeToAdd.grade,
-        rating: routeToAdd.rating,
-        area: routeToAdd.area,
+async function setRoute(firestore, uid, body) {
+    const routesCollection = getRoutesCollection(firestore, uid);
+    const routeDocument = routesCollection.doc(body.id);
+
+    await routeDocument.set({
+        name: body.name,
+        grade: body.grade,
+        rating: body.rating,
+        area: body.area,
+        type: body.type,
     });
 }
 
-async function removeFromRouteList(firestore, collectionName, uid, removeId) {
-    const collectionRef = firestore.collection('users').doc(`${uid}`).collection(collectionName).doc(`${removeId}`);
-    await collectionRef.delete();
+async function getRoutes(firestore, uid) {
+    const routesCollection = getRoutesCollection(firestore, uid);
+    const snapshot = await routesCollection.get();
+    const routeDocs = snapshot.docs;
+    
+    const routeData = routeDocs.map(doc => {
+        const routeData = doc.data();
+        return {
+            id: doc.id,
+            name: routeData.name,
+            grade: routeData.grade,
+            rating: routeData.rating,
+            area: routeData.area,
+            type: routeData.type,
+        };
+    });
+
+    return routeData;
 }
 
-async function removeSend(firestore, uid, removeId) {
-    await removeFromRouteList(firestore, 'sendList', uid, removeId);
-}
-
-async function removeTodo(firestore, uid, removeId) {
-    await removeFromRouteList(firestore, 'todoList', uid, removeId);
-}
-
-async function addSend(firestore, uid, routeToAdd) {
-    await addToRouteList(firestore, 'sendList', uid, routeToAdd);
-}
-
-async function addTodo(firestore, uid, routeToAdd) {
-    await addToRouteList(firestore, 'todoList', uid, routeToAdd);
+async function removeRoute(firestore, uid, removeId) {
+    const routesCollection = getRoutesCollection(firestore, uid);
+    const routeDocument = routesCollection.doc(removeId);
+    await routeDocument.delete();
+        
 }
 
 module.exports = {
-    addSend,
-    addTodo,
-    removeTodo,
-    removeSend,
+    setRoute,
+    removeRoute,
+    getRoutes,
 }
