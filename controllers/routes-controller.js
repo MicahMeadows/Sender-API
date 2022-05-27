@@ -9,7 +9,7 @@ const routeLogging = require('../models/route-logging/route-logging');
 var findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;
 
-    const routes = await routesData.getRoutesWithPreferences(preferences);
+    const routes = await routesData.getRouteFinderRoutesWithPreferences(preferences);
 
     res.status(200).send(routes);
 }
@@ -48,7 +48,7 @@ var getQueueRoutes = async (req, res) => {
         }
 
         // get routes based on preferences
-        var routes = await routesData.getRoutesWithPreferences(userPreferences);
+        var routes = await routesData.getRouteFinderRoutesWithPreferences(userPreferences);
 
         // remove sent and todod and skipped
         var savedRoutes = await routeLogging.getRoutes(firestore, uid);

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const routeFinder = require('../mp-route-finder');
 
-async function getRoutesWithPreferences(preferences) {
+async function getRouteFinderRoutesWithPreferences(preferences) {
     
     const requestUrl = makeRockClimbCsvRequestUrl({
         areaId: preferences.areaId,
@@ -17,7 +17,7 @@ async function getRoutesWithPreferences(preferences) {
         showTopRope: preferences.showTopRope,
     });
 
-    const routes = await getRoutes(requestUrl);
+    const routes = await getRouteFinderRoutes(requestUrl);
 
     return routes;
 
@@ -69,7 +69,7 @@ function makeRockClimbCsvRequestUrl(settings){
         return ROCK_CLIMBS_REQUEST_URL;
     }
 
-async function getRoutes(url) {
+async function getRouteFinderRoutes(url) {
     const csvResponse = await axios.get(url);
     const csvData = csvResponse.data;
 
@@ -100,5 +100,5 @@ async function getRoutes(url) {
 }
 
 module.exports = {
-    getRoutesWithPreferences,
+    getRouteFinderRoutesWithPreferences,
 }
