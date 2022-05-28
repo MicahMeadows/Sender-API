@@ -35,8 +35,12 @@ function starValueFromPreferences(rating) {
     switch (rating) {
         case 1:
             return 1.8;
+        case 1.5:
+            return 2.3;
         case 2:
             return 2.8;
+        case 2.5:
+            return 3.3;
         case 3:
             return 3.8;
         default:
