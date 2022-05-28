@@ -31,8 +31,8 @@ const routeGradeValues = {
     '5.15a': 11600, '5.15b': 11900, '5.15c': 12100, '5.15d': 12400,
  };
 
-function starValueFromPreferences(minStars) {
-    switch (minStars) {
+function starValueFromPreferences(rating) {
+    switch (rating) {
         case 1:
             return 1.8;
         case 2:
@@ -72,7 +72,7 @@ async function getRouteFinderRoutes(preferences) {
         type: 'rock',
         gradeMin: getRouteGradeValue(preferences.minGrade),
         gradeMax: getRouteGradeValue(preferences.maxGrade),
-        qualityRange: starValueFromPreferences(preferences.minStars),
+        qualityRange: starValueFromPreferences(preferences.minRating),
         numPitches: preferences.showMultipitch ? 0 : 1, // not a boolean, 0 is any pitches, 1 is exactly 1 pitch
         filter1: 'area',
         filter2: 'rating',
