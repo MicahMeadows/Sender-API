@@ -72,13 +72,13 @@ async function getRouteFinderRoutes(preferences) {
         type: 'rock',
         gradeMin: getRouteGradeValue(preferences.minGrade),
         gradeMax: getRouteGradeValue(preferences.maxGrade),
-        qualityRange: starValueFromPreferences(preferences.minStars), // find values for stars 
-        numPitches: preferences.showMultipitch ? 0 : 1, // find values for pitches
+        qualityRange: starValueFromPreferences(preferences.minStars),
+        numPitches: preferences.showMultipitch ? 0 : 1, // not a boolean, 0 is any pitches, 1 is exactly 1 pitch
         filter1: 'area',
         filter2: 'rating',
-        showTrad: preferences.showTrad,
-        showSport: preferences.showSport,
-        showTopRope: preferences.showTopRope,
+        showTrad: preferences.showTrad ? 1 : 0,
+        showSport: preferences.showSport ? 1 : 0,
+        showTopRope: preferences.showTopRope ? 1 : 0,
     });
     const csvResponse = await axios.get(requestUrl);
     const csvData = csvResponse.data;
@@ -105,14 +105,16 @@ async function getRouteFinderRoutes(preferences) {
 
         routes.push({
             id: routeId,
+            grade: route.Rating,
             name: fixFormatting(route.Route),
             area: fixFormatting(route.Location),
-            rating: route['Avg Stars'],
+            rating: parseFloat(route['Avg Stars']),
             type: fixFormatting(route['Route Type']),
-            pitches: route.Pitches,
-            length: route.Length,
-            longitude: route['Area Longitude'],
-            latitude: route['Area Latitude'],
+            pitches: parseInt(route.Pitches),
+            length: parseInt(route.Length),
+            longitude: parseFloat(route['Area Longitude']),
+            latitude: parseFloat(route['Area Latitude']),
+            mountainProjectUrl: url,
         });
     }
 

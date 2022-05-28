@@ -1,10 +1,8 @@
-const { ExecutionContext } = require('puppeteer');
-const routeFinderHelper = require('../models/mp-route-finder');
-const routeScraper = require('../models/mp-route-scraping');
-const userController = require('./user-controller').default;
+const routeScraping = require('../models/mp-route-scraping');
 const routesData =require('../models/routes/routes');
 const userData = require('../models/user/user');
 const routeLogging = require('../models/route-logging/route-logging');
+const { filter } = require('domutils');
 
 var findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;
@@ -24,7 +22,7 @@ var findRouteDetails =  async (req, res) => {
     }
 
     try {
-        const routeResults = await routeScraper.getRouteData(routeIds);
+        const routeResults = await routeScraping.getRouteData(routeIds);
         res.status(200).send(routeResults);
 
     } catch (ex) {
@@ -33,10 +31,10 @@ var findRouteDetails =  async (req, res) => {
 }
 
 var getQueueRoutes = async (req, res) => {
-    
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
+        var includePageData = req.query.includePageData == 'true' ? true : false;
 
         // get preferences for user
         const userPreferences = await userData.getUserPreferences(firestore, uid);
@@ -46,16 +44,35 @@ var getQueueRoutes = async (req, res) => {
         }
 
         // get routes based on preferences
-        var routes = await routesData.getRouteFinderRoutesWithPreferences(userPreferences);
+        const routes = await routesData.getRouteFinderRoutesWithPreferences(userPreferences);
 
         // remove sent and todod and skipped
-        var savedRoutes = await routeLogging.getRoutes(firestore, uid);
-        var idsToRemove = savedRoutes.map(route => route.id);
+        const savedRoutes = await routeLogging.getRoutes(firestore, uid);
+        const idsToRemove = savedRoutes.map(route => route.id);
         var filteredRoutes = routes.filter(({ id }) => !idsToRemove.includes(id));
 
-        // return routes
-        res.status(200).send(filteredRoutes);
+        if (!includePageData) {
+            res.status(200).send(filteredRoutes);
+        } else {
+            const filteredRouteIds = filteredRoutes.map(route => route.id);
 
+            const queueRoutes = await routeScraping.getRouteData(filteredRouteIds);
+
+            const mergedRoutes = queueRoutes.map(route => {
+                const preDeatiledRoute = filteredRoutes.find(({ id }) => id == route.id);
+                return {
+                    ...preDeatiledRoute,
+                    firstAscent: route.firstAscent,
+                    imageUrls: route.imageUrls,
+                    areas: route.areas,
+                    details: route.details,
+                }
+            });
+
+            // return routes
+            res.status(200).send(mergedRoutes);
+            // res.status(200).send(queueRoutes);
+        }
     } catch (ex) {
         res.status(400).send(`Error retreiving queue routes: ${ex}`);
     }
