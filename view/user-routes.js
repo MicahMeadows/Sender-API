@@ -8,7 +8,7 @@ router.post('/', userController.createUser);
 
 // preferences
 router.get('/preferences', userController.getPreferences);
-router.patch('/preferences', userController.updatePreferences);
+router.post('/preferences', userController.updatePreferences);
 
 // route
 router.post('/route', routeLoggingController.setRoute);
