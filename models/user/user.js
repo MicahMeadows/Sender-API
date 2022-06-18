@@ -1,6 +1,7 @@
 const routeLogging = require('../route-logging/route-logging');
 
 async function createUser(firestore, userData) {
+        console.log('create user hit');
         const userRef = firestore.collection('users').doc(userData.uid);
         
         await firestore.runTransaction(async (t) => {
@@ -19,6 +20,7 @@ async function createUser(firestore, userData) {
                 uid: userData.uid,
                 name: userData.name,
                 preferences: null,
+                routes: [],
         }
 }
 

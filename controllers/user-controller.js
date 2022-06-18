@@ -8,10 +8,14 @@ var createUser = async (req, res) => {
         const uid = req.uid;
         const name = req.body.name;
 
+        console.log('new user should try make', req.body);
+
         const newUser = await userModel.createUser(firestore, {
             uid: uid,
             name: name,
         });
+
+        console.log('new user', newUser);
 
         res.status(200).send(newUser);
     } catch (ex) {
@@ -26,12 +30,9 @@ var getPreferences = async (req, res) => {
 
         const userPreferences = await preferences.getUserPreferences(firestore, uid);
 
-        if (userPreferences == null) {
-            res.status(404).send(`Failed to find user preferences for the id: ${uid}`);
-        } 
-        else {
-            res.status(200).send(userPreferences);
-        }
+        console.log(`user pref: ${userPreferences}`);
+
+        res.status(200).send(userPreferences);
     } catch (ex) {
         res.status(400).send(`Failed to get preferences: ${ex}`);
 

@@ -23,7 +23,7 @@ function getRouteGradeValue(routeGrade) {
 const routeGradeValues = {
     '3rd': 800, '4th': 900,
     '5.0': 1000, '5.1': 1100, '5.2': 1200, '5.3': 1300, '5.4': 1400,
-    '5.6': 1600, '5.7': 1080, '5.8': 2000, '5.9': 2300,
+    '5.5': 1500, '5.6': 1600, '5.7': 1080, '5.8': 2000, '5.9': 2300,
     '5.10a': 2600, '5.10b': 2700, '5.10c': 3100, '5.10d': 3300, '5.11a': 4600,
     '5.11b': 4800, '5.11c': 5100, '5.11d': 5300, '5.12a': 6600, '5.12b': 6700,
     '5.12c': 7100, '5.12d': 7300, '5.13a': 8600, '5.13b': 8700, '5.13c': 9200,
@@ -84,6 +84,7 @@ async function getRouteFinderRoutes(preferences) {
         showSport: preferences.showSport ? 1 : 0,
         showTopRope: preferences.showTopRope ? 1 : 0,
     });
+    console.log(requestUrl);
     const csvResponse = await axios.get(requestUrl);
     const csvData = csvResponse.data;
 
