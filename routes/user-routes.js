@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user-controller');
-const routeLoggingController = require('../controllers/route-logging-controller');
+const tickLoggingController = require('../controllers/tick-logging-controller');
 
 // user
 router.post('/', userController.createUser);
@@ -11,8 +11,8 @@ router.get('/preferences', userController.getPreferences);
 router.post('/preferences', userController.updatePreferences);
 
 // route
-router.post('/route', routeLoggingController.setRoute);
-router.delete('/route/:id', routeLoggingController.removeRoute);
-router.get('/route', routeLoggingController.getRoutes);
+router.post('/tick', tickLoggingController.setTick);
+router.delete('/tick/:id', tickLoggingController.removeTick);
+router.get('/tick', tickLoggingController.getTicks);
 
 module.exports = router;

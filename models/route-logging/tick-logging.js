@@ -1,6 +1,10 @@
-var getRoutesCollection = (firestore, uid) => firestore.collection('users').doc(`${uid}`).collection('routes');
+// var getRoutesCollection = (firestore, uid) => firestore.collection('users').doc(`${uid}`).collection('routes');
 
-async function setRoute(firestore, uid, body) {
+function getRoutesCollection(firestore, uid) {
+    return firestore.collection('users').doc(`${uid}`).collection('routes');
+}
+
+async function setTick(firestore, uid, body) {
     const routesCollection = getRoutesCollection(firestore, uid);
     const routeDocument = routesCollection.doc(body.id);
 
@@ -13,7 +17,7 @@ async function setRoute(firestore, uid, body) {
     });
 }
 
-async function getRoutes(firestore, uid) {
+async function getTicks(firestore, uid) {
     const routesCollection = getRoutesCollection(firestore, uid);
     const snapshot = await routesCollection.get();
     const routeDocs = snapshot.docs;
@@ -33,7 +37,7 @@ async function getRoutes(firestore, uid) {
     return routeData;
 }
 
-async function removeRoute(firestore, uid, removeId) {
+async function removeTick(firestore, uid, removeId) {
     const routesCollection = getRoutesCollection(firestore, uid);
     const routeDocument = routesCollection.doc(removeId);
     await routeDocument.delete();
@@ -41,7 +45,7 @@ async function removeRoute(firestore, uid, removeId) {
 }
 
 module.exports = {
-    setRoute,
-    removeRoute,
-    getRoutes,
+    setTick,
+    removeTick,
+    getTicks
 }

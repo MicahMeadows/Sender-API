@@ -1,13 +1,11 @@
-const { get } = require('cheerio/lib/api/traversing');
-const routeLoggingModel = require('../models/route-logging/route-logging');
-const { route } = require('../view/climbing-route-routes');
+const routeLoggingModel = require('../models/route-logging/tick-logging');
 
-var setRoute = async (req, res) => {
+var setTick = async (req, res) => {
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
 
-        await routeLoggingModel.setRoute(firestore, uid, req.body); 
+        await routeLoggingModel.setTick(firestore, uid, req.body); 
 
         res.status(200).send(req.body);
 
@@ -17,13 +15,13 @@ var setRoute = async (req, res) => {
 
 }
 
-var removeRoute = async (req, res) => {
+var removeTick = async (req, res) => {
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
         const removeId = req.params.id;
 
-        await routeLoggingModel.removeRoute(firestore, uid, removeId);
+        await routeLoggingModel.removeTick(firestore, uid, removeId);
 
         res.status(200).send();
     } catch (ex) {
@@ -31,12 +29,12 @@ var removeRoute = async (req, res) => {
     }
 }
 
-var getRoutes = async (req, res) => {
+var getTicks = async (req, res) => {
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
 
-        const routes = await routeLoggingModel.getRoutes(firestore, uid);
+        const routes = await routeLoggingModel.getTicks(firestore, uid);
 
         res.status(200).send(routes);
     } catch (ex) {
@@ -45,7 +43,7 @@ var getRoutes = async (req, res) => {
 }
 
 module.exports = {
-    setRoute,
-    removeRoute,
-    getRoutes,
+    setTick,
+    removeTick,
+    getTicks,
 }

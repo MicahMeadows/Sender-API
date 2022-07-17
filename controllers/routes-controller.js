@@ -1,13 +1,13 @@
 const routeScraping = require('../models/mp-route-scraping');
-const routesData =require('../models/routes/routes');
-const userData = require('../models/user/user');
-const routeLogging = require('../models/route-logging/route-logging');
+const routeModel =require('../models/routes/routes');
+const userModel = require('../models/user/user');
+const tickLogging = require('../models/route-logging/tick-logging');
 const { filter } = require('domutils');
 
 var findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;
 
-    const routes = await routesData.getRouteFinderRoutesWithPreferences(preferences);
+    const routes = await routeModel.getRouteFinderRoutesWithPreferences(preferences);
 
     res.status(200).send(routes);
 }
@@ -30,26 +30,61 @@ var findRouteDetails =  async (req, res) => {
     }
 }
 
+var getSavedRouteDetails = async (req, res) => {
+    try {
+        const firebase = req.service.firestore;
+        const routeId = req.params.id;
+        console.log(`id :${routeId}`)
+
+        var routeData = await routeModel.getSavedRouteDetails(firebase, routeId);
+
+        console.log(`route data: ${routeData}`);
+
+        res.status(200).send(routeData);
+    } catch (ex) {
+        res.status(400).send(`Failed to load route: ${ex}`);
+    }
+}
+
+var saveRouteDetails = async (req, res) => {
+    try {
+        const firebase = req.service.firestore;
+        const route = req.body;
+        console.log(`route: ${route}`);
+
+        await routeModel.saveRouteDetails(firebase, route);
+
+        res.status(200).send(route);
+    } catch (ex) {
+        res.status(400).send(`Cannot add: ${ex}`);
+    }
+}
+
 var getQueueRoutes = async (req, res) => {
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
         var includePageData = req.query.includePageData == 'true' ? true : false;
+        var numResults = req.query.numResults;
 
         // get preferences for user
-        const userPreferences = await userData.getUserPreferences(firestore, uid);
+        const userPreferences = await userModel.getUserPreferences(firestore, uid);
             
         if (userPreferences == null) {
             throw 'No user preferences found.';
         }
 
         // get routes based on preferences
-        const routes = await routesData.getRouteFinderRoutesWithPreferences(userPreferences);
+        const routes = await routeModel.getRouteFinderRoutesWithPreferences(userPreferences);
 
         // remove sent and todod and skipped
-        const savedRoutes = await routeLogging.getRoutes(firestore, uid);
+        const savedRoutes = await tickLogging.getTicks(firestore, uid);
         const idsToRemove = savedRoutes.map(route => route.id);
         var filteredRoutes = routes.filter(({ id }) => !idsToRemove.includes(id));
+
+        if (numResults != null) {
+            filteredRoutes = filteredRoutes.slice(0, numResults); 
+        }
 
         if (!includePageData) {
             res.status(200).send(filteredRoutes);
@@ -81,5 +116,6 @@ var getQueueRoutes = async (req, res) => {
 module.exports = {
     findRouteDetails,
     findRoutesWithFilters,
-    getQueueRoutes
+    getQueueRoutes,
+    getSavedRouteDetails,
 }

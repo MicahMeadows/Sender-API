@@ -1,4 +1,3 @@
-const routeLogging = require('../route-logging/route-logging');
 
 async function createUser(firestore, userData) {
         console.log('create user hit');

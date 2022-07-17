@@ -1,6 +1,6 @@
 const preferences = require('../models/user/user');
 const userModel = require('../models/user/user');
-const routeLoggingModel = require('../models/route-logging/route-logging');
+const routeLoggingModel = require('../models/route-logging/tick-logging');
 
 var createUser = async (req, res) => {
     try {

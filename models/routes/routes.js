@@ -1,4 +1,25 @@
 const axios = require('axios');
+const { Router } = require('express');
+
+// async function getSavedRouteDetails(firebase, routeId) {
+//     try {
+//         const routeRef = firebase.collection('routes').doc(routeId);
+//         const route = await routeRef.get();
+//         const routeData = route.data();
+//         return routeData;
+//     } catch (ex) {
+//         throw `Failed to load route: ${ex}`;
+//     }
+// }
+
+// async function saveRouteDetails(firebase, route) {
+//     try {
+//         const routesCollectijon = firebase.collection('routes');
+        
+//     } catch (ex) {
+//         throw `Failed to save route: ${ex}`;
+//     }
+// }
 
 function getIdFromUrl(url) {
     /* url format:
@@ -128,4 +149,5 @@ async function getRouteFinderRoutes(preferences) {
 
 module.exports = {
     getRouteFinderRoutesWithPreferences,
+    // getSavedRouteDetails,
 }
