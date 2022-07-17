@@ -1,6 +1,6 @@
 const express = require('express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+// const swaggerJsdoc = require('swagger-jsdoc');
+// const swaggerUi = require('swagger-ui-express');
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 const firebaseServiceAccount = require('./config/firebaseServiceAccountKey.json');
@@ -37,22 +37,22 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // Extended: https://swagger.io/specification/#infoObject
-const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: 'Sender API',
-            description: 'Exposes endpoints to retreieve rock climbing route data.',
-            contact: {
-                name: 'Micah',
-            },
-            servers: [ 'http://localhost:8080' ],
-        },
-    },
-    apis: ["index.js"]
-}
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// const swaggerOptions = {
+//     swaggerDefinition: {
+//         info: {
+//             title: 'Sender API',
+//             description: 'Exposes endpoints to retreieve rock climbing route data.',
+//             contact: {
+//                 name: 'Micah',
+//             },
+//             servers: [ 'http://localhost:8080' ],
+//         },
+//     },
+//     apis: ["index.js"]
+// }
+// 
+// const swaggerDocs = swaggerJsdoc(swaggerOptions);
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(express.json());
 

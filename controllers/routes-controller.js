@@ -1,4 +1,5 @@
-const routeScraping = require('../models/mp-route-scraping');
+// const routeScraping = require('../models/mp-route-scraping');
+const routeScraping = require('../models/mp-route-scraping-new');
 const routeModel =require('../models/routes/routes');
 const userModel = require('../models/user/user');
 const tickLogging = require('../models/route-logging/tick-logging');
