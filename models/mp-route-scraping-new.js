@@ -53,7 +53,11 @@ function getRouteData(routeIds) {
         });
 
         let imageUrls = images == null ? null : Array.from(images).map(element => {
-            return $(element).attr('data-src').replace('smallMed', 'large');
+            var imageUrl = $(element).attr('data-src');
+            imageUrl = imageUrl.replace('smallMed', 'large');
+            imageUrl = imageUrl.replace('medium', 'large');
+            imageUrl = imageUrl.replace('small', 'large');
+            return imageUrl;
         });
 
         const firstAscent = firstAscentTd.replace('\\n', '').trim();
