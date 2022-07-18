@@ -3,6 +3,7 @@ const routeScraping = require('../models/mp-route-scraping-new');
 const routeModel =require('../models/routes/routes');
 const userModel = require('../models/user/user');
 const tickLogging = require('../models/route-logging/tick-logging');
+const routeLogging = require('../models/route-logging/route-logging');
 const { filter } = require('domutils');
 
 var findRoutesWithFilters = async (req, res) => {
@@ -11,6 +12,18 @@ var findRoutesWithFilters = async (req, res) => {
     const routes = await routeModel.getRouteFinderRoutesWithPreferences(preferences);
 
     res.status(200).send(routes);
+}
+
+var getRouteInfo = async (req, res) => {
+    const firebase = req.service.firestore;
+    const id = req.params.id;
+
+    try {
+        const loadedRoute = await routeLogging.getRoute(firebase, id);
+        res.status(200).send(loadedRoute); 
+    } catch (ex) {
+        res.status(404).send();
+    }
 }
 
 var findRouteDetails =  async (req, res) => {
@@ -93,11 +106,19 @@ var getQueueRoutes = async (req, res) => {
         if (!includePageData) {
             res.status(200).send(filteredRoutes);
         } else {
-            const filteredRouteIds = filteredRoutes.map(route => route.id);
+            var databaseRoutes = [];
+            var routesIdsToFill = filteredRoutes.map(e => e.id);
+            routesIdsToFill.forEach(async id => {
+                const storedRoute = await routeLogging.getRoute(firestore, id);
+                if (storedRoute != null) {
+                    routesIdsToFill.filter(e => e.id != id);
+                    databaseRoutes.push(storedRoute);
+                }
+            });
 
-            const queueRoutes = await routeScraping.getRouteData(filteredRouteIds);
+            var scrapedRoutes = await routeScraping.getRouteData(routesIdsToFill);
 
-            const mergedRoutes = queueRoutes.map(route => {
+            const mergedRoutes = scrapedRoutes.map(route => {
                 const preDeatiledRoute = filteredRoutes.find(({ id }) => id == route.id);
                 return {
                     ...preDeatiledRoute,
@@ -108,9 +129,13 @@ var getQueueRoutes = async (req, res) => {
                 }
             });
 
-            // return routes
-            res.status(200).send(mergedRoutes);
-            // res.status(200).send(queueRoutes);
+            mergedRoutes.forEach(async route => {
+                await routeLogging.setRoute(firestore, route);
+            });
+
+            var allRoutes = [...databaseRoutes, ...mergedRoutes];
+
+            res.status(200).send(allRoutes);
         }
     } catch (ex) {
         res.status(400).send(`Error retreiving queue routes: ${ex}`);
@@ -122,4 +147,6 @@ module.exports = {
     findRoutesWithFilters,
     getQueueRoutes,
     getSavedRouteDetails,
+    saveRouteDetails,
+    getRouteInfo,
 }

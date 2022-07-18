@@ -105,7 +105,7 @@ async function getRouteFinderRoutes(preferences) {
         showSport: preferences.showSport ? 1 : 0,
         showTopRope: preferences.showTopRope ? 1 : 0,
     });
-    console.log(requestUrl);
+
     const csvResponse = await axios.get(requestUrl);
     const csvData = csvResponse.data;
 
