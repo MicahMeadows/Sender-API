@@ -34,7 +34,7 @@ var findRouteDetails =  async (req, res) => {
 var getSavedRouteDetails = async (req, res) => {
     try {
         const firebase = req.service.firestore;
-        const routeId = req.params.id;
+        const routeId = req.params.id
         console.log(`id :${routeId}`)
 
         var routeData = await routeModel.getSavedRouteDetails(firebase, routeId);
@@ -65,6 +65,7 @@ var getQueueRoutes = async (req, res) => {
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
+        const settings = req.body;
         var includePageData = req.query.includePageData == 'true' ? true : false;
         var numResults = req.query.numResults;
 
@@ -80,7 +81,9 @@ var getQueueRoutes = async (req, res) => {
 
         // remove sent and todod and skipped
         const savedRoutes = await tickLogging.getTicks(firestore, uid);
-        const idsToRemove = savedRoutes.map(route => route.id);
+        const savedRoutesIds = savedRoutes.map(route => route.id);
+        const currentQueueIds = settings.ignore;
+        const idsToRemove = [...savedRoutesIds, ...currentQueueIds];
         var filteredRoutes = routes.filter(({ id }) => !idsToRemove.includes(id));
 
         if (numResults != null) {
