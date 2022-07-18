@@ -99,7 +99,7 @@ async function getRouteFinderRoutes(preferences) {
         gradeMax: getRouteGradeValue(preferences.maxGrade),
         qualityRange: starValueFromPreferences(preferences.minRating),
         numPitches: preferences.showMultipitch ? 0 : 1, // not a boolean, 0 is any pitches, 1 is exactly 1 pitch
-        filter1: 'area',
+        filter1: 'popularity desc',
         filter2: 'rating',
         showTrad: preferences.showTrad ? 1 : 0,
         showSport: preferences.showSport ? 1 : 0,

@@ -4,6 +4,7 @@ const routeModel = require('../models/routes/routes');
 const userModel = require('../models/user/user');
 const tickLogging = require('../models/route-logging/tick-logging');
 const routeLogging = require('../models/route-logging/route-logging');
+const { ConsoleMessage } = require('puppeteer');
 
 const findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;
@@ -137,6 +138,11 @@ const getQueueRoutes = async (req, res) => {
                 var allNewRoutes = databaseRoutes.concat(scrapedRoutes);
 
                 if (needImages) {
+                    allNewRoutes.forEach(route => {
+                        console.log(route);
+                        console.log(route.imageUrls);
+                    });
+
                     allNewRoutes = allNewRoutes.filter(e => e.imageUrls != null && e.imageUrls.length > 0);
                 }
 

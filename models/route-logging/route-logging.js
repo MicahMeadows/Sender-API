@@ -24,6 +24,9 @@ async function getRoute(firestore, routeId) {
         const routeRef = firestore.collection('routes').doc(routeId);
         const routeDoc = await routeRef.get();
         const routeData = routeDoc.data();
+        if (routeData == null) {
+            throw 'Failed to get route';
+        }
         return {
             id: routeId,
             ...routeData,
