@@ -30,8 +30,6 @@ var getPreferences = async (req, res) => {
 
         const userPreferences = await preferences.getUserPreferences(firestore, uid);
 
-        console.log(`user pref: ${userPreferences}`);
-
         res.status(200).send(userPreferences);
     } catch (ex) {
         res.status(400).send(`Failed to get preferences: ${ex}`);

@@ -54,9 +54,11 @@ function getRouteData(routeIds) {
 
         let imageUrls = images == null ? null : Array.from(images).map(element => {
             var imageUrl = $(element).attr('data-src');
-            imageUrl = imageUrl.replace('smallMed', 'large');
-            imageUrl = imageUrl.replace('medium', 'large');
-            imageUrl = imageUrl.replace('small', 'large');
+            // const preferedSize = 'medium';
+            // imageUrl = imageUrl.replace('large', preferedSize);
+            // imageUrl = imageUrl.replace('smallMed', preferedSize);
+            // imageUrl = imageUrl.replace('medium', preferedSize);
+            // imageUrl = imageUrl.replace('small', preferedSize);
             return imageUrl;
         });
 
