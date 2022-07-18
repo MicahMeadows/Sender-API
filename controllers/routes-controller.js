@@ -138,11 +138,6 @@ const getQueueRoutes = async (req, res) => {
                 var allNewRoutes = databaseRoutes.concat(scrapedRoutes);
 
                 if (needImages) {
-                    allNewRoutes.forEach(route => {
-                        console.log(route);
-                        console.log(route.imageUrls);
-                    });
-
                     allNewRoutes = allNewRoutes.filter(e => e.imageUrls != null && e.imageUrls.length > 0);
                 }
 
