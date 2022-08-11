@@ -93,7 +93,7 @@ function makeRockClimbCsvRequestUrl(settings){
 
 async function getRouteFinderRoutes(preferences) {
     const requestUrl = makeRockClimbCsvRequestUrl({
-        areaId: preferences.areaId,
+        areaId: preferences.area.id,
         type: 'rock',
         gradeMin: getRouteGradeValue(preferences.minGrade),
         gradeMax: getRouteGradeValue(preferences.maxGrade),

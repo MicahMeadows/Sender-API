@@ -42,9 +42,9 @@ async function getSubAreas(parentAreaId = 0) {
             let areaLevel = parseInt(link.parentElement.className.replace('l-', ''));
 
             let areaInfo = {
-                "areaId": areaId,
-                "areaTitle": areaTitle,
-                // "areaLevel": areaLevel
+                "id": areaId,
+                "name": areaTitle,
+                "level": areaLevel
             };
             areas.push(areaInfo);
         });
