@@ -82,7 +82,7 @@ const getQueueRoutes = async (req, res) => {
         const includePageData = req.query.includePageData == 'true' ? true : false;
         const numResults = req.query.numResults;
         const needImages = req.query.needImages;
-
+2
         // get preferences for user
         const userPreferences = await userModel.getUserPreferences(firestore, uid);
 
@@ -97,6 +97,7 @@ const getQueueRoutes = async (req, res) => {
         const savedTicks = await tickLogging.getTicks(firestore, uid);
         const savedTicksIds = savedTicks.map(route => route.id);
         const currentQueueIds = settings.ignore;
+        
         const idsToRemove = [...savedTicksIds, ...currentQueueIds];
         var potentialRoutes = allPotentialRoutes.filter(({ id }) => !idsToRemove.includes(id));
 
@@ -147,6 +148,7 @@ const getQueueRoutes = async (req, res) => {
             res.status(200).send(routesWithImages);
         }
     } catch (ex) {
+        console.log(ex);
         res.status(400).send(`Error retreiving queue routes: ${ex}`);
     }
 }
