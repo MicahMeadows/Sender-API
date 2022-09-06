@@ -14,6 +14,7 @@ async function setTick(firestore, uid, body) {
         rating: body.rating,
         area: body.area,
         type: body.type,
+        routeType: body.routeType,
     });
 }
 

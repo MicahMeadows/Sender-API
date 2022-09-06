@@ -6,7 +6,7 @@ const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestor
 const firebaseServiceAccount = require('./config/firebaseServiceAccountKey.json');
 const firebaseAdmin = require('firebase-admin');
 const checkAuth = require('./middleware/firebaseAuth');
-
+const cors = require('cors');
 
 
 // routes
@@ -53,7 +53,7 @@ const port = process.env.PORT || 8080;
 // 
 // const swaggerDocs = swaggerJsdoc(swaggerOptions);
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
+app.use(cors());
 app.use(express.json());
 
 app.use('/routes/queue', checkAuth);
