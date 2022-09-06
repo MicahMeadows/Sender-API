@@ -4,7 +4,6 @@ const routeModel = require('../models/routes/routes');
 const userModel = require('../models/user/user');
 const tickLogging = require('../models/route-logging/tick-logging');
 const routeLogging = require('../models/route-logging/route-logging');
-const { ConsoleMessage } = require('puppeteer');
 
 const findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;

@@ -1,12 +1,43 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const { map } = require('cheerio/lib/api/traversing');
 
 function createMountainProjectUrl(routeId) {
     return `https://www.mountainproject.com/route/${routeId}`;
 }
 
-function getRouteData(routeIds) {
+async function testImageUrl(url) {
+    const res = await fetch(url, {
+        method: 'HEAD',
+    });
+    const status = res.status;
+    return status >= 200 && status < 300;
+}
+
+async function upscaleImage(imageUrl) {
+    var firstUnderscore = imageUrl.indexOf('_');
+    var restString = imageUrl.substring(firstUnderscore + 1);
+    var imgSize = restString.substring(0, restString.indexOf('_'));
+
+    var largeUrl = imageUrl.replace(imgSize, 'large');
+    const largeUrlValid = await testImageUrl(largeUrl);
+    if (largeUrlValid) return largeUrl;
+
+    var mediumUrl = imageUrl.replace(imgSize, 'medium');
+    const mediumUrlValid = await testImageUrl(mediumUrl);
+    if (mediumUrlValid) return mediumUrl;
+
+    var smallMedUrl = imageUrl.replace(imgSize, 'smallMed');
+    const smallMedUrlValid = await testImageUrl(smallMedUrl);
+    if (smallMedUrl) return smallMedUrl;
+
+    var smallUrl = imageUrl.replace(imgSize, 'small');
+    const smallUrlValid = await testImageUrl(smallUrl);
+    if (smallUrl) return smallUrl;
+
+    return imgSize;
+}
+
+async function getRouteData(routeIds) {
     const requests = routeIds.map(async id => {
         const url = createMountainProjectUrl(id);
         const res = await fetch(url);
@@ -52,15 +83,25 @@ function getRouteData(routeIds) {
             };
         });
 
-        let imageUrls = images == null ? null : Array.from(images).map(element => {
-            var imageUrl = $(element).attr('data-src');
-            // const preferedSize = 'large';
-            // imageUrl = imageUrl.replace('large', preferedSize);
-            // imageUrl = imageUrl.replace('smallMed', preferedSize);
-            // imageUrl = imageUrl.replace('medium', preferedSize);
-            // imageUrl = imageUrl.replace('small', preferedSize);
-            return imageUrl;
-        });
+        var imageUrls;
+        if (images != null) {
+            imageUrls = await Promise.all(Array.from(images).map(async element => {
+                try {
+                    var imageUrl = $(element).attr('data-src');
+
+                    return imageUrl;
+
+                } catch (e) {
+                    console.log(e);
+                }
+            }));
+        }
+
+        var upscaledImages = [];
+        for (var image of imageUrls) {
+            const upscaled = await upscaleImage(image);
+            upscaledImages.push(upscaled);
+        }
 
         const firstAscent = firstAscentTd.replace('\\n', '').trim();
 
@@ -68,7 +109,7 @@ function getRouteData(routeIds) {
             firstAscent: firstAscent,
             details: sectionsData,
             areas: areas.slice(1),
-            imageUrls: imageUrls,
+            imageUrls: upscaledImages,
             id: id,
         }
     });
