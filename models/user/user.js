@@ -1,25 +1,35 @@
 
 async function createUser(firestore, userData) {
         console.log('create user hit');
-        const userRef = firestore.collection('users').doc(userData.uid);
-        
-        await firestore.runTransaction(async (t) => {
-                const userDoc = await t.get(userRef);
-                const existing = userDoc.data();
-                if (existing == null) {
-                        t.set(userRef, {
-                                name: userData.name,
-                                preferences: null,
-                        });
-                } else {
-                        throw new Error('User already exists');
-                }
+
+        const newPrefs = {
+                area: {
+                        id: "0",
+                        level: 0,
+                        name: "All Locations:"
+                },
+                maxGrade: "5.15d",
+                minGrade: "5.0",
+                minRating: 1.5,
+                showMultipitch: true,
+                showSport: true,
+                showTrad: true,
+                showTopRope: true
+        };
+
+
+        await firestore.collection('users').doc(userData.uid).set({
+                name: userData.profile.displayName,
+                preferences: newPrefs
+        }, {
+                merge: true,
         });
+
         return {
                 uid: userData.uid,
-                name: userData.name,
-                preferences: null,
-                routes: [],
+                email: userData.profile.email,
+                displayName: userData.profile.displayName,
+                routePreferences: newPrefs,
         }
 }
 

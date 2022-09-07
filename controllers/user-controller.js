@@ -6,13 +6,12 @@ var createUser = async (req, res) => {
     try {
         const firestore = req.service.firestore;
         const uid = req.uid;
-        const name = req.body.name;
 
         console.log('new user should try make', req.body);
 
         const newUser = await userModel.createUser(firestore, {
             uid: uid,
-            name: name,
+            profile: req.body
         });
 
         console.log('new user', newUser);
