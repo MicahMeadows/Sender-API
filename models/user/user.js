@@ -1,6 +1,5 @@
 
 async function createUser(firestore, userData) {
-        console.log('create user hit');
 
         const newPrefs = {
                 area: {
@@ -8,9 +7,9 @@ async function createUser(firestore, userData) {
                         level: 0,
                         name: "All Locations:"
                 },
-                maxGrade: "5.15d",
-                minGrade: "5.0",
-                minRating: 1.5,
+                maxGrade: "5.9",
+                minGrade: "5.12a",
+                minRating: 2,
                 showMultipitch: true,
                 showSport: true,
                 showTrad: true,
