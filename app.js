@@ -8,6 +8,7 @@ const firebaseAdmin = require('firebase-admin');
 const checkAuth = require('./middleware/firebaseAuth');
 const cors = require('cors');
 
+// TODO: remove me test
 
 // routes
 const climbingRouteRoutes = require('./routes/climbing-route-routes');
