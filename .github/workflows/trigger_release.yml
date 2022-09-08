@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Test
-        run: echo '${{ env.GITHUB_EVENT_NAME }}' 
+        run: echo '${{ github.event.action }}' 
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
