@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Test
+        run: echo '${{ GITHUB_EVENT_NAME }}' 
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
