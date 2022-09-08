@@ -7,8 +7,8 @@ async function createUser(firestore, userData) {
                         level: 0,
                         name: "All Locations:"
                 },
-                maxGrade: "5.9",
-                minGrade: "5.12a",
+                maxGrade: "5.12a",
+                minGrade: "5.9",
                 minRating: 2,
                 showMultipitch: true,
                 showSport: true,
