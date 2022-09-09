@@ -1,75 +1,36 @@
-const puppeteer = require('puppeteer');
-const scrapingHelpers = require('./puppeteer-helpers');
-
-
-
-
-function parseLevelFromClass(classLevel) {
-    let fixedLevel = classLevel.replace('l-', '');
-    return parseInt(fixedLevel);
-}
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 async function getSubAreas(parentAreaId = 0) {
+    const _baseUrl = 'https://www.mountainproject.com/ajax/public/area-picker-list';
+    const res = await fetch(`${_baseUrl}/${parentAreaId}`);
+    const html = await res.text();
+    const $ = cheerio.load(html);
 
-    const subAreasRequestUrl = `https://www.mountainproject.com/ajax/public/area-picker-list/${parentAreaId}?mode=single&routes=0#`;
+    const divs = $('div');
+    
+    const areas = [];
+    divs.each((_, e) => {
+        let aTag = $(e).find('a');
+        let strongTag = $(e).find('strong');
 
+        const id = strongTag != '' ? parentAreaId.trim() : aTag.attr('data-area-id').trim();
+        const name = strongTag != '' ? strongTag.text().trim() : aTag.attr('data-area-title').trim();
 
-    let browser = await puppeteer.launch({
-        headless: true,
-        args: [
-            "--disable-gpu",
-            "--no-sandbox",
-        ]
-    });
-
-    let page = await browser.newPage();
-
-    await page.goto(subAreasRequestUrl, { waitUntil: 'networkidle2' });
-
-    let selectedClassName = await page.$eval('div > strong', (area) => {
-        return area.parentElement.className;
-    });
-
-    let parentLevel = parseLevelFromClass(selectedClassName);
-    // console.log(`parent area level: ${parentLevel}`);
-
-
-    let areaData = await page.$$eval('div > a', (links) => {
-        let areas = [];
-        links.forEach((link) => {
-            let areaId = link.getAttribute('data-area-id');
-            let areaTitle = link.getAttribute('data-area-title');
-            let areaLevel = parseInt(link.parentElement.className.replace('l-', ''));
-
-            let areaInfo = {
-                "id": areaId,
-                "name": areaTitle,
-                "level": areaLevel
-            };
-            areas.push(areaInfo);
+        areas.push({
+            id: id,
+            name: name
         });
-        
-        return areas;
     });
 
-    const numResults = areaData.length;
+    // String id
+    // String name
 
-    const lastArea = areaData[numResults-1];
-    console.log(`last area level: ${lastArea.areaLevel}`);
-
-    await browser.close();
-
-    if (parentLevel == lastArea.areaLevel) {
-        console.log('is leaf node');
-        return [];
-    } else {
-        console.log(areaData);
-        return areaData;
-    }
+    return areas;
 };
 
 // const KENTUCKY_ID = 105868674;
 
 // getSubAreas(KENTUCKY_ID);
 
-module.exports = { getSubAreas};
+module.exports = { getSubAreas };
