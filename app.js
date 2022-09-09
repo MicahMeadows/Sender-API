@@ -63,9 +63,9 @@ app.use('/routes', exposeFirebaseServices, climbingRouteRoutes);
 app.use('/areas', exposeFirebaseServices, areaRoutes);
 app.use('/user', exposeFirebaseServices, checkAuth, userRoutes);
 
-app.listen(
-    port, () => console.log(`were live at http://localhost:${port}`)
-);
+// app.listen(
+//     port, () => console.log(`were live at http://localhost:${port}`)
+// );
 
 module.exports = {
     app: app
