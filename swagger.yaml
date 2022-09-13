@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: Sender API
+  description: API for Sender App
+  contact:
+    name: Micah
+    url: https://github.com/micahmeadows
+  version: 1.0.0
+servers:
+  - url: https://api.choss.rocks
+paths:
+  /areas/{parentId}:
+    description: Get Climbing Areas
+    get:
+      description: Get climbing areas under area
+      parameters:
+        - in: path
+          required: true
+          name: parentId
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully got areas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/areas"
+components:
+  schemas:
+    area:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 0
+        name:
+          type: string
+          example: All locations
+    areas:
+      type: array
+      items:
+        $ref: '#/components/schemas/area'
+        
