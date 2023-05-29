@@ -9,9 +9,26 @@ info:
 servers:
   - url: https://api.choss.rocks
 paths:
-  /areas/{parentId}:
-    description: Get Climbing Areas
+  /user/preferences:
     get:
+      description: Get Preferences of authenticated user
+      tags:
+        - User
+      responses:
+        403:
+          description: Failed to authorize getting user preferences
+        200:
+          description: Successfully got users preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoutePreferences"
+      
+  /areas/{parentId}:
+    description: Climbing Areas with Parent ID
+    get:
+      tags:
+        - Area
       description: Get climbing areas under area
       parameters:
         - in: path
@@ -19,6 +36,7 @@ paths:
           name: parentId
           schema:
             type: string
+            default: 0
       responses:
         200:
           description: Successfully got areas
@@ -28,6 +46,32 @@ paths:
                 $ref: "#/components/schemas/areas"
 components:
   schemas:
+    RoutePreferences:
+      type: object
+      properties:
+        area:
+          $ref: "#/components/schemas/area"
+        showTopRope:
+          type: boolean
+          example: true
+        showTrad:
+          type: boolean
+          example: true
+        showSport:
+          type: boolean
+          example: true
+        minRating:
+          type: number
+          example: 1.5
+        showMultipitch:
+          type: boolean
+          example: false
+        minGrade:
+          type: string
+          example: "5.12a"
+        maxGrade:
+          type: string
+          example: "5.14c"
     area:
       type: object
       properties:
