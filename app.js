@@ -35,7 +35,7 @@ const exposeFirebaseServices = (req, res, next) => {
 
 const app = express();
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 11629;
 
 // Extended: https://swagger.io/specification/#infoObject
 // const swaggerOptions = {
