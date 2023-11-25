@@ -101,7 +101,6 @@ const getQueueRoutes = async (req, res) => {
         if (shouldLoadCached) {
             let cachedRoutes = await routeModel.getCachedRoutes(firestore, uid);
             console.log("Cached routes: ", cachedRoutes)
-            cachedRoutes = await filterTickedOut(cachedRoutes, firestore, uid);
             if (cachedRoutes != null && cachedRoutes.length > 0) {
                 res.status(200).send(cachedRoutes);
                 return;
