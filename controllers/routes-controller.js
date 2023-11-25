@@ -4,6 +4,7 @@ const routeModel = require('../models/routes/routes');
 const userModel = require('../models/user/user');
 const tickLogging = require('../models/route-logging/tick-logging');
 const routeLogging = require('../models/route-logging/route-logging');
+const { filter } = require('cheerio/lib/api/traversing');
 
 const findRoutesWithFilters = async (req, res) => {
     const preferences = req.body;
@@ -73,6 +74,18 @@ const saveRouteDetails = async (req, res) => {
     }
 }
 
+const filterTickedOut = async (routes, firestore, uid) => {
+    if (routes == null || routes.length == 0) {
+        return routes;
+    }
+
+    // remove sent and todod and skipped
+    const savedTicks = await tickLogging.getTicks(firestore, uid);
+    const savedTicksIds = savedTicks.map(route => route.id);
+
+    return routes.filter(({ id }) => !savedTicksIds.includes(id));
+}
+
 const getQueueRoutes = async (req, res) => {
     try {
         const firestore = req.service.firestore;
@@ -81,7 +94,19 @@ const getQueueRoutes = async (req, res) => {
         const includePageData = req.query.includePageData == 'true' ? true : false;
         const numResults = req.query.numResults;
         const needImages = req.query.needImages;
-2
+
+        const shouldLoadCached = settings.cached;
+        console.log(`Should load cached: ${shouldLoadCached}`);
+
+        if (shouldLoadCached) {
+            let cachedRoutes = await routeModel.getCachedRoutes(firestore, uid);
+            console.log("Cached routes: ", cachedRoutes)
+            if (cachedRoutes != null && cachedRoutes.length > 0) {
+                res.status(200).send(cachedRoutes);
+                return;
+            }
+        }
+
         // get preferences for user
         const userPreferences = await userModel.getUserPreferences(firestore, uid);
 
@@ -92,13 +117,17 @@ const getQueueRoutes = async (req, res) => {
         // get routes based on preferences
         const allPotentialRoutes = await routeModel.getRouteFinderRoutesWithPreferences(userPreferences);
 
-        // remove sent and todod and skipped
-        const savedTicks = await tickLogging.getTicks(firestore, uid);
-        const savedTicksIds = savedTicks.map(route => route.id);
+        // // remove sent and todod and skipped
+        // const savedTicks = await tickLogging.getTicks(firestore, uid);
+        // const savedTicksIds = savedTicks.map(route => route.id);
+        // const currentQueueIds = settings.ignore;
         const currentQueueIds = settings.ignore;
+
         
-        const idsToRemove = [...savedTicksIds, ...currentQueueIds];
-        var potentialRoutes = allPotentialRoutes.filter(({ id }) => !idsToRemove.includes(id));
+        // const idsToRemove = [...savedTicksIds, ...currentQueueIds];
+        // var potentialRoutes = allPotentialRoutes.filter(({ id }) => !idsToRemove.includes(id));
+        var potentialRoutes = await filterTickedOut(allPotentialRoutes, firestore, uid);
+        potentialRoutes = allPotentialRoutes.filter(({ id }) => !currentQueueIds.includes(id));
 
         if (!includePageData) {
             res.status(200).send(potentialRoutes);
@@ -142,6 +171,8 @@ const getQueueRoutes = async (req, res) => {
                 }
 
                 routesWithImages = routesWithImages.concat(allNewRoutes);
+
+                await routeModel.cacheCurrentRoutes(firestore, uid, routesWithImages);
             }
 
             res.status(200).send(routesWithImages);
