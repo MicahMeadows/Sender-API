@@ -92,6 +92,49 @@ function makeRockClimbCsvRequestUrl(settings){
     return ROCK_CLIMBS_REQUEST_URL;
 }
 
+const getCachedRoutesCollection = (firestore, uid) => firestore.collection('users').doc(`${uid}`).collection('queue-cache');
+
+async function deleteCurrentCachedRoutes(firestore, uid) {
+    const cacheCollection = getCachedRoutesCollection(firestore, uid);
+
+    const snapshot = await cacheCollection.get();
+
+    const deletePromises = snapshot.docs.map((doc) => {
+        return doc.ref.delete();
+    });
+
+    return Promise.all(deletePromises);
+}
+
+async function cacheCurrentRoutes(firestore, uid, routes) {
+    await deleteCurrentCachedRoutes(firestore, uid);
+
+    const cacheCollection = getCachedRoutesCollection(firestore, uid);
+
+    for (const route of routes) {
+        console.log("Route to cache" + route)
+        const routeDoc = cacheCollection.doc(route.id);
+        await routeDoc.set(route);
+    }
+}
+
+async function getCachedRoutes(firestore, uid) {
+    const cacheCollection = getCachedRoutesCollection(firestore, uid);
+
+    const snapshot = await cacheCollection.get();
+    const routeDocs = snapshot.docs;
+
+    const routeData = routeDocs.map(doc => {
+        const route = doc.data();
+        return {
+            id: doc.id,
+            ...route,
+        }
+    });
+
+    return routeData;
+}
+
 async function getRouteFinderRoutes(preferences) {
     const requestUrl = makeRockClimbCsvRequestUrl({
         areaId: preferences.area.id,
@@ -150,5 +193,6 @@ async function getRouteFinderRoutes(preferences) {
 
 module.exports = {
     getRouteFinderRoutesWithPreferences,
-    // getSavedRouteDetails,
+    getCachedRoutes,
+    cacheCurrentRoutes,
 }
